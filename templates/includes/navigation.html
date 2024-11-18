@@ -1,106 +1,145 @@
 {% load static %}
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+	rel="stylesheet">
+
 <!-- Navbar -->
 <div class="container position-sticky z-index-sticky top-0">
-  <div class="row">
-    <div class="col-12">
-      <nav class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-fixed shadow position-absolute my-3 py-2 start-0 end-0 mx-4">
-        <div class="container-fluid px-0">
-          <a class="navbar-brand font-weight-bolder ms-sm-2 mb-0 bg-gradient-primary btn btn-rounded" href="/" rel="tooltip">
-            Task Manager
-          </a>
-          <div class="collapse navbar-collapse pt-3 pb-2 py-lg-0 w-100" id="navigation">
-            <ul class="navbar-nav navbar-nav-hover ms-lg-12 ps-lg-5 w-100">
-
-              <!-- Users List Icon -->
-              <li class="nav-item">
-                <a class="nav-link nav-link-icon" href="{% url 'task_manager:worker_list' %}" title="Worker list">
+	<div class="row">
+		<div class="col-12">
+			<nav
+				class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-fixed shadow position-absolute my-3 py-2 start-0 end-0 mx-4">
+				<div class="container-fluid px-0">
+					
+					<!-- Logo -->
+					<a
+						class="navbar-brand font-weight-bolder ms-sm-2 mb-0 bg-gradient-primary btn btn-rounded"
+						href="/" rel="tooltip">
+						Task Manager
+					</a>
+					
+					<button class="navbar-toggler shadow-none ms-2" type="button"
+									data-bs-toggle="collapse"
+									data-bs-target="#navigation" aria-controls="navigation"
+									aria-expanded="false"
+									aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon mt-2">
+              <span class="navbar-toggler-bar bar1"></span>
+              <span class="navbar-toggler-bar bar2"></span>
+              <span class="navbar-toggler-bar bar3"></span>
+            </span>
+					</button>
+					<div class="collapse navbar-collapse pt-3 pb-2 py-lg-0 w-100"
+							 id="navigation">
+						<ul class="navbar-nav navbar-nav-hover ms-lg-12 ps-lg-5 w-100">
+							
+							<!-- Users List Icon -->
+							<li class="nav-item">
+								<a class="nav-link nav-link-icon"
+									 href="{% url 'task_manager:worker_list' %}"
+									 title="Worker list">
                   <span class="text-gradient text-primary">
                     <i class="fas fa-user-friends me-1 fa-lg"></i>
                   </span>
-                  <span class="text-sm">Workers</span>
-                </a>
-              </li>
-
-              <!-- Task Dropdown -->
-              <li class="nav-item dropdown dropdown-hover mx-2">
-                <a class="nav-link ps-2 d-flex align-items-center" href="#" id="dropdownMenuBlocks" data-bs-toggle="dropdown" title="Task options">
+									<span class="text-sm">Workers</span>
+								</a>
+							</li>
+							
+							<!-- Task Dropdown -->
+							<li class="nav-item dropdown dropdown-hover mx-2">
+								<a class="nav-link ps-2 d-flex align-items-center" href="#"
+									 id="dropdownMenuBlocks" data-bs-toggle="dropdown"
+									 title="Task options">
                   <span class="text-gradient text-primary">
                     <i class="fas fa-tasks fa-lg me-2"></i>
                   </span>
-                  Task
-                  <img src="{% static 'img/down-arrow-white.svg' %}" alt="down-arrow" class="arrow ms-1" />
-                </a>
-                <ul class="dropdown-menu dropdown-menu-animation dropdown-lg dropdown-lg-responsive p-3 border-radius-lg mt-0 mt-lg-3" aria-labelledby="dropdownMenuBlocks">
-                  <div class="d-none d-lg-block">
-                    <li class="nav-item dropdown dropdown-hover dropdown-subitem">
-                      <a class="dropdown-item py-2 ps-3 border-radius-md" href=" ">
-                        <div class="d-flex">
-                          <div class="icon h-10 me-3 d-flex mt-1">
-                            <i class="ni ni-single-copy-04 text-gradient text-primary"></i>
-                          </div>
-                          <div class="w-100 d-flex align-items-center justify-content-between">
-                            <div>
-                              <h6 class="dropdown-header text-dark font-weight-bolder d-flex justify-content-center align-items-center p-0">
-                                List
-                              </h6>
-                            </div>
-                          </div>
-                        </div>
-                      </a>
-                    </li>
-                    <li class="nav-item dropdown dropdown-hover dropdown-subitem">
-                      <a class="dropdown-item py-2 ps-3 border-radius-md" href=" ">
-                        <div class="d-flex">
-                          <div class="icon h-10 me-3 d-flex mt-1">
-                            <i class="ni ni-single-copy-04 text-gradient text-primary"></i>
-                          </div>
-                          <div class="w-100 d-flex align-items-center justify-content-between">
-                            <div>
-                              <h6 class="dropdown-header text-dark font-weight-bolder d-flex justify-content-center align-items-center p-0">
-                                Create
-                              </h6>
-                            </div>
-                          </div>
-                        </div>
-                      </a>
-                    </li>
-                  </div>
-                </ul>
-              </li>
-
-              {% if request.user.is_authenticated %}
-              <!-- User Detail Icon -->
-              <li class="nav-item ms-lg-auto">
-                <a class="nav-link nav-link-icon" href="{% url 'task_manager:worker_detail' user.pk %}" title="User page">
+									Task
+									<img src="{% static 'img/down-arrow-white.svg' %}"
+											 alt="down-arrow" class="arrow ms-1"/>
+								</a>
+								<ul
+									class="dropdown-menu dropdown-menu-animation dropdown-lg dropdown-lg-responsive p-3 border-radius-lg mt-0 mt-lg-3"
+									aria-labelledby="dropdownMenuBlocks">
+									<li
+										class="nav-item dropdown dropdown-hover dropdown-subitem">
+										<a class="dropdown-item py-2 ps-3 border-radius-md"
+											 href=" ">
+											<div class="d-flex">
+												<div class="icon h-10 me-3 d-flex mt-1">
+													<i
+														class="ni ni-single-copy-04 text-gradient text-primary"></i>
+												</div>
+												<div
+													class="w-100 d-flex align-items-center justify-content-between">
+													<div>
+														<h6
+															class="dropdown-header text-dark font-weight-bolder d-flex justify-content-center align-items-center p-0">
+															List
+														</h6>
+													</div>
+												</div>
+											</div>
+										</a>
+									</li>
+									<li
+										class="nav-item dropdown dropdown-hover dropdown-subitem">
+										<a class="dropdown-item py-2 ps-3 border-radius-md"
+											 href=" ">
+											<div class="d-flex">
+												<div class="icon h-10 me-3 d-flex mt-1">
+													<i
+														class="ni ni-single-copy-04 text-gradient text-primary"></i>
+												</div>
+												<div
+													class="w-100 d-flex align-items-center justify-content-between">
+													<div>
+														<h6
+															class="dropdown-header text-dark font-weight-bolder d-flex justify-content-center align-items-center p-0">
+															Create
+														</h6>
+													</div>
+												</div>
+											</div>
+										</a>
+									</li>
+								</ul>
+							</li>
+							
+							{% if request.user.is_authenticated %}
+								<!-- User Detail Icon -->
+								<li class="nav-item ms-lg-auto">
+									<a class="nav-link nav-link-icon"
+										 href="{% url 'task_manager:worker_detail' user.pk %}"
+										 title="User page">
                   <span class="text-gradient text-primary">
                     <i class="far fa-user fa-lg"></i>
                   </span>
-                </a>
-              </li>
-              <!-- Logout Button -->
-              <li class="nav-item ms-lg-3 ms-2">
-                <a class="nav-link nav-link-icon" href="#" title="Logout">
+									</a>
+								</li>
+								<!-- Logout Button -->
+								<li class="nav-item ms-lg-3 ms-2">
+									<a class="nav-link nav-link-icon" href="#" title="Logout">
                   <span class="text-gradient text-primary">
                     <i class="fa fa-sign-out fa-lg"></i>
                   </span>
-                </a>
-              </li>
-              {% else %}
-              <!-- Login Button -->
-              <li class="nav-item ms-lg-auto ms-2">
-                <a class="nav-link nav-link-icon" href="#" title="Login">
+									</a>
+								</li>
+							{% else %}
+								<!-- Login Button -->
+								<li class="nav-item ms-lg-auto ms-2">
+									<a class="nav-link nav-link-icon" href="#" title="Login">
                   <span class="text-gradient text-primary">
                     <i class="fa fa-sign-in fa-lg"></i>
                   </span>
-                </a>
-              </li>
-              {% endif %}
-
-            </ul>
-          </div>
-        </div>
-      </nav>
-      <!-- End Navbar -->
-    </div>
-  </div>
+									</a>
+								</li>
+							{% endif %}
+						
+						</ul>
+					</div>
+				</div>
+			</nav>
+			<!-- End Navbar -->
+		</div>
+	</div>
 </div>
