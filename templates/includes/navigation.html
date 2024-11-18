@@ -48,49 +48,43 @@
 									src="{% static 'img/down-arrow-white.svg' %}"
 									alt="down-arrow" class="arrow ms-1"/> </a>
 								<ul
-									class="dropdown-menu dropdown-menu-animation dropdown-lg dropdown-lg-responsive p-3 border-radius-lg mt-0 mt-lg-3"
+									class="dropdown-menu p-3 border-radius-lg mt-0 mt-lg-3 overflow-hidden"
 									aria-labelledby="dropdownMenuBlocks">
-									<li
-										class="nav-item dropdown dropdown-hover dropdown-subitem">
+									<li class="dropdown-subitem">
 										<a class="dropdown-item py-2 ps-3 border-radius-md"
-											 href=" ">
+											 href="#">
 											<div class="d-flex">
-												<div class="icon h-10 me-3 d-flex mt-1">
+												<div class="icon h-10 me-3 d-flex align-items-center">
 													<i
 														class="ni ni-single-copy-04 text-gradient text-primary"></i>
 												</div>
 												<div
 													class="w-100 d-flex align-items-center justify-content-between">
-													<div>
-														<h6
-															class="dropdown-header text-dark font-weight-bolder d-flex justify-content-center align-items-center p-0">
-															List </h6>
-													</div>
+													<h6 class="text-dark font-weight-bolder p-0 m-0">
+														List</h6>
 												</div>
 											</div>
 										</a>
 									</li>
-									<li
-										class="nav-item dropdown dropdown-hover dropdown-subitem">
+									<li class="dropdown-subitem">
 										<a class="dropdown-item py-2 ps-3 border-radius-md"
-											 href=" ">
+											 href="#">
 											<div class="d-flex">
-												<div class="icon h-10 me-3 d-flex mt-1">
+												<div class="icon h-10 me-3 d-flex align-items-center">
 													<i
 														class="ni ni-single-copy-04 text-gradient text-primary"></i>
 												</div>
 												<div
 													class="w-100 d-flex align-items-center justify-content-between">
-													<div>
-														<h6
-															class="dropdown-header text-dark font-weight-bolder d-flex justify-content-center align-items-center p-0">
-															Create </h6>
-													</div>
+													<h6 class="text-dark font-weight-bolder p-0 m-0">
+														Create</h6>
 												</div>
 											</div>
 										</a>
 									</li>
 								</ul>
+
+							
 							</li>
 							
 							{% if request.user.is_authenticated %}
@@ -104,7 +98,7 @@
                   </span> </a>
 								</li>
 								<!-- Logout Button -->
-								<li class="nav-item ms-lg-3 ms-2">
+								<li class="nav-item ms-lg-2">
 									<a class="nav-link nav-link-icon" href="#" title="Logout">
                   <span class="text-gradient text-primary">
                     <i class="fa fa-sign-out fa-lg"></i>
@@ -112,7 +106,7 @@
 								</li>
 							{% else %}
 								<!-- Login Button -->
-								<li class="nav-item ms-lg-auto ms-2">
+								<li class="nav-item ms-lg-auto ms-lg-2">
 									<a class="nav-link nav-link-icon" href="#" title="Login">
                   <span class="text-gradient text-primary">
                     <i class="fa fa-sign-in fa-lg"></i>
