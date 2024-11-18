@@ -1,0 +1,195 @@
+{% extends 'layouts/base_sections.html' %}
+{% load static %}
+
+{% block title %} Worker Details {% endblock title %}
+
+{% block body %} class="index-page bg-gray-200" {% endblock body %}
+
+{% block content %}
+
+	<header class="header-2">
+		<div class="page-header min-vh-65 relative"
+				 style="background-image: url('{% static 'img/curved-images/curved.jpg' %}')">
+			<div class="container">
+				<div class="card">
+					<div class="card-header bg-gradient-light text-white text-center">
+						<h2>{{ worker.username|capfirst }}</h2>
+						<p class="mb-0">Position: <span
+								class="fw-bold">{{ worker.position.name }}</span></p>
+					</div>
+					<div class="card-body">
+						<div class="row ms-5">
+							<div class="col-md-6 border-start border-primary border-2">
+								<p><strong>First
+									Name:</strong> {{ worker.first_name|capfirst }}</p>
+								<p><strong>Last Name:</strong> {{ worker.last_name|capfirst }}
+								</p>
+								<p><strong>Email:</strong> <i>{{ worker.email }}</i></p>
+							</div>
+							<div class="col-md-6 border-start border-primary border-2">
+								<p><strong>Total Tasks:</strong>
+									<span class="fw-bold" id="state1"
+												countTo="{{ worker.tasks.count }}">
+                  {{ worker.tasks.count }}
+                </span>
+								</p>
+								<p><strong>Active Tasks:</strong>
+									{% if active_tasks > 0 %}
+										<span class="fw-bold" id="state2"
+													countTo="{{ active_tasks }}">
+                    {{ active_tasks }}
+                  </span>
+									{% else %}
+										<span class="text-muted">No active tasks</span>
+									{% endif %}
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="position-absolute w-100 z-index-1 bottom-0">
+				<svg class="waves" xmlns="http://www.w3.org/2000/svg"
+						 xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 40"
+						 preserveAspectRatio="none" shape-rendering="auto">
+					<defs>
+						<path id="gentle-wave"
+									d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
+					</defs>
+					<g class="moving-waves">
+						<use xlink:href="#gentle-wave" x="48" y="-1"
+								 fill="rgba(255,255,255,0.40)"/>
+						<use xlink:href="#gentle-wave" x="48" y="3"
+								 fill="rgba(255,255,255,0.35)"/>
+						<use xlink:href="#gentle-wave" x="48" y="5"
+								 fill="rgba(255,255,255,0.25)"/>
+						<use xlink:href="#gentle-wave" x="48" y="8"
+								 fill="rgba(255,255,255,0.20)"/>
+						<use xlink:href="#gentle-wave" x="48" y="13"
+								 fill="rgba(255,255,255,0.15)"/>
+						<use xlink:href="#gentle-wave" x="48" y="16"
+								 fill="rgba(255,255,255,0.95)"/>
+					</g>
+				</svg>
+			</div>
+		</div>
+	</header>
+
+	<div class="container my-5">
+		<!-- Active Tasks Section -->
+		<div class="mt-5">
+			<h4 class="text-uppercase text-primary m-5">Active Tasks</h4>
+			<div class="row g-5">
+				{% for task in tasks %}
+					{% if not task.is_completed %}
+						<div class="col-md-6">
+							<div class="card">
+								<div class="card-header bg-gradient-primary text-white">
+									<h5 class="card-title text-uppercase mb-0">{{ task.name }}</h5>
+								</div>
+								<div class="card-body">
+									<div class="container border-start border-primary border-2">
+										<p><strong>Type:</strong> {{ task.task_type.name }}</p>
+										<p><strong>Priority:</strong>
+											{% if task.priority == 4 %}
+												<span class="badge bg-gradient-danger">Urgent</span>
+											{% elif task.priority == 3 %}
+												<span class="badge bg-gradient-warning">High</span>
+											{% elif task.priority == 2 %}
+												<span class="badge bg-gradient-info">Medium</span>
+											{% else %}
+												<span class="badge bg-gradient-success">Low</span>
+											{% endif %}
+										</p>
+										<p><strong>Deadline:</strong>
+											{% if task.deadline < today %}
+												<span class="badge bg-gradient-danger">Overdue</span>
+												{{ task.deadline }}
+											{% else %}
+												{{ task.deadline }}
+											{% endif %}
+										</p>
+									</div>
+									<div class="text-center mt-3">
+										<a href="#" class="btn btn-outline-primary btn-sm">
+											View Task Details
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					{% endif %}
+				{% endfor %}
+			</div>
+			{% if active_tasks == 0 %}
+				<p class="text-muted">No active tasks assigned.</p>
+			{% endif %}
+		</div>
+
+		<!-- Completed Tasks Section -->
+		<div class="mt-5">
+			<h4 class="text-uppercase text-primary m-5">Completed Tasks</h4>
+			<div class="row g-3">
+				{% for task in tasks %}
+					{% if task.is_completed %}
+						<div class="col-md-6">
+							<div class="card shadow-sm border-0">
+								<div class="card-header bg-gradient-success">
+									<h5 class="card-title text-uppercase mb-0">{{ task.name }}</h5>
+								</div>
+								<div class="card-body">
+									<div class="container border-start border-primary border-2">
+										<p><strong>Type:</strong> {{ task.task_type.name }}</p>
+										<p><strong>Priority:</strong>
+											{% if task.priority == 4 %}
+												<span class="badge bg-gradient-danger">Urgent</span>
+											{% elif task.priority == 3 %}
+												<span class="badge bg-gradient-warning">High</span>
+											{% elif task.priority == 2 %}
+												<span class="badge bg-gradient-info">Medium</span>
+											{% else %}
+												<span class="badge bg-gradient-success">Low</span>
+											{% endif %}
+										</p>
+										<p><strong>Deadline:</strong> {{ task.deadline }}</p>
+									</div>
+									<div class="text-center mt-3">
+										<a href="#" class="btn btn-outline-primary btn-sm">
+											View Task Details
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					{% endif %}
+				{% endfor %}
+			</div>
+			{% if active_tasks == total_tasks %}
+				<p class="text-muted">No completed tasks assigned.</p>
+			{% endif %}
+		</div>
+	</div>
+
+{% endblock content %}
+
+{% block javascripts %}
+	<script type="text/javascript">
+      if (document.getElementById('state1')) {
+          const countUp = new CountUp('state1', document.getElementById("state1").getAttribute("countTo"));
+          if (!countUp.error) {
+              countUp.start();
+          } else {
+              console.error(countUp.error);
+          }
+      }
+      if (document.getElementById('state2')) {
+          const countUp1 = new CountUp('state2', document.getElementById("state2").getAttribute("countTo"));
+          if (!countUp1.error) {
+              countUp1.start();
+          } else {
+              console.error(countUp1.error);
+          }
+      }
+	</script>
+{% endblock javascripts %}
