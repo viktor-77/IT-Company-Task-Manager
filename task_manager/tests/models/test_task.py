@@ -22,7 +22,7 @@ class TaskModelTest(TestCase):
             description="Some description.",
             deadline=datetime.date.today() + datetime.timedelta(days=7),
             is_completed=False,
-            priority="High",
+            priority=3,
             task_type=self.task_type,
         )
 
@@ -40,7 +40,7 @@ class TaskModelTest(TestCase):
             description="Task with past deadline.",
             deadline=past_date,
             is_completed=False,
-            priority="Medium",
+            priority=2,
             task_type=self.task_type,
         )
         with self.assertRaises(ValidationError) as context:

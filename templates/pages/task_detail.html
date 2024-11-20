@@ -1,0 +1,210 @@
+{% extends 'layouts/base_sections.html' %}{% load static %}
+
+{% block title %} Worker Details {% endblock title %}
+
+{% block body %} class="index-page bg-gray-200" {% endblock body %}
+
+{% block content %}
+	<header class="header-2">
+		<div
+			class="page-header min-vh-65 relative"
+			style="background-image: url('{% static 'img/curved-images/curved.jpg' %}')">
+			<div class="container">
+				<div class="card">
+					<div class="card-header bg-gradient-light text-white text-center position-relative">
+
+						{% if messages %}
+							<div>
+								{% for message in messages %}
+									<h4 class="alert alert-success text-center fw-bold w-50  m-auto mb-4">
+										{{ message }}
+									</h4>
+								{% endfor %}
+							</div>
+						{% endif %}
+
+						<div class="d-flex justify-content-{{ is_coworker|yesno:"between,center" }} text-center m-3">
+							{% if is_coworker and not task.is_completed %}
+								<a href="{% url "task_manager:task_update" task.pk %}">
+									<div
+										class="btn bg-gradient-primary btn-icon m-0"
+										type="button">
+										<div class="d-flex align-items-center">
+											<i
+												class="fas fa-edit me-2"
+												aria-hidden="true"></i>
+											Edit
+										</div>
+									</div>
+								</a>
+							{% endif %}
+							<h2>{{ task.name }}</h2>
+							{% if is_coworker and not task.is_completed %}
+								<a href="{% url "task_manager:task_update" task.pk %}">
+									<div
+										class="btn bg-gradient-danger btn-icon m-0"
+										type="button">
+										<div class="d-flex align-items-center">
+											<i
+												class="fas fa-trash me-2"
+												aria-hidden="true"></i>
+											Delete
+										</div>
+									</div>
+								</a>
+							{% endif %}
+						</div>
+
+						<h5 class="mb-3">Task type: <span
+							class="badge text-capitalize fw-bold  bg-gradient-secondary ">{{ task.task_type }}</span>
+						</h5>
+					</div>
+					<div class="card-body">
+						<div class="row ms-5">
+							<div class="col-md-6 border-start border-primary border-2">
+								<p>
+									<strong>Created at:</strong>
+									<i>{{ task.created_at }}</i>
+								</p>
+								<p>
+									<strong>Deadline:</strong>
+									<i>{{ task.deadline }}</i>
+								</p>
+							</div>
+							<div class="col-md-6 border-start border-primary border-2">
+								<p>
+									<strong>Task status:</strong>
+									{% if task.is_completed %}
+										<span class="badge bg-gradient-success  m-auto text-capitalize">Resolved</span>
+									{% else %}
+										<span class="badge bg-gradient-info  m-auto text-capitalize">In
+											progress</span>
+									{% endif %}
+								</p>
+								<p>
+									<strong>Priority:</strong>
+									{% if task.priority == 4 %}
+										<span class="badge bg-gradient-danger">Urgent</span>
+									{% elif task.priority == 3 %}
+										<span class="badge bg-gradient-warning">High</span>
+									{% elif task.priority == 2 %}
+										<span class="badge bg-gradient-info">Medium</span>
+									{% else %}
+										<span class="badge bg-gradient-success">Low</span>
+									{% endif %}
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="position-absolute w-100 z-index-1 bottom-0">
+				<svg
+					class="waves"
+					xmlns="http://www.w3.org/2000/svg"
+					xmlns:xlink="http://www.w3.org/1999/xlink"
+					viewBox="0 24 150 40"
+					preserveAspectRatio="none"
+					shape-rendering="auto">
+					<defs>
+						<path
+							id="gentle-wave"
+							d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
+					</defs>
+					<g class="moving-waves">
+						<use
+							xlink:href="#gentle-wave"
+							x="48"
+							y="-1"
+							fill="rgba(255,255,255,0.40)"></use>
+						<use
+							xlink:href="#gentle-wave"
+							x="48"
+							y="3"
+							fill="rgba(255,255,255,0.35)"></use>
+						<use
+							xlink:href="#gentle-wave"
+							x="48"
+							y="5"
+							fill="rgba(255,255,255,0.25)"></use>
+						<use
+							xlink:href="#gentle-wave"
+							x="48"
+							y="8"
+							fill="rgba(255,255,255,0.20)"></use>
+						<use
+							xlink:href="#gentle-wave"
+							x="48"
+							y="13"
+							fill="rgba(255,255,255,0.15)"></use>
+						<use
+							xlink:href="#gentle-wave"
+							x="48"
+							y="16"
+							fill="rgba(255,255,255,0.95)"></use>
+					</g>
+				</svg>
+			</div>
+		</div>
+	</header>
+
+	<section>
+		<div class="container py-5">
+			<div class="row justify-content-center">
+				<div class="col-lg-10 col-md-12 bg-white p-5 card shadow-lg border border-2 border-light">
+					<h2 class="fw-bold mb-4 text-center border-bottom w-50 m-auto p-3 border-primary">
+						Task Description
+						<span class="text-primary text-gradient"><i class="fas fa-file-alt text-gradient text-primary"></i></span>
+					</h2>
+					<div class="text-dark fs-5 mt-5">
+						{{ task.description|capfirst|linebreaks }}
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+
+	<section>
+		<div class="container py-5">
+			<div class="row justify-content-center">
+				<div class="col-lg-10 col-md-12 bg-white p-5 card shadow-lg border border-2 border-light">
+					<h2 class="fw-bold mb-4 text-center border-bottom w-50 m-auto p-3 border-primary">
+						Assigned Workers
+						<span class="text-primary text-gradient"><i class="fas fa-users fa-sm"></i></span>
+					</h2>
+					<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+						{% for worker in task.assignees.all %}
+							<div class="col">
+								<div class="card border-0 shadow-sm h-100">
+									<div class="card-body text-center">
+										<div
+											class="icon-lg bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mb-3 mx-auto"
+											style="width: 80px; height: 80px;">
+											<i class="fas {% cycle 'fa-user' 'fa-user-astronaut' 'fa-user-secret' 'fa-user-circle' 'fa-user-tie' %} fa-2x"></i>
+										</div>
+										<h5 class="card-title mb-1">{{ worker.username|capfirst }}</h5>
+										<p class="mb-1 text-dark">
+											<strong>{{ worker.first_name|capfirst }} {{ worker.last_name|capfirst }}</strong>
+										</p>
+										<p class="text-muted mb-2">{{ worker.position }}</p>
+										<a
+											href="{% url 'task_manager:worker_detail' worker.id %}"
+											class="btn btn-outline-primary btn-sm">
+											View Profile
+										</a>
+									</div>
+								</div>
+							</div>
+						{% empty %}
+							<div class="col text-center">
+								<p class="text-muted">No workers assigned to this task.</p>
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock content %}

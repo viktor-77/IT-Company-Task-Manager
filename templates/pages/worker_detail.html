@@ -8,37 +8,53 @@
 {% block content %}
 
 	<header class="header-2">
-		<div class="page-header min-vh-65 relative"
-				 style="background-image: url('{% static 'img/curved-images/curved.jpg' %}')">
+		<div
+			class="page-header min-vh-65 relative"
+			style="background-image: url('{% static 'img/curved-images/curved.jpg' %}')">
 			<div class="container">
 				<div class="card">
-					<div class="card-header bg-gradient-light text-white text-center">
+					<div class="card-header bg-gradient-faded-light-vertical text-white text-center">
 						<h2>{{ worker.username|capfirst }}</h2>
 						<p class="mb-0">Position: <span
-								class="fw-bold">{{ worker.position.name }}</span></p>
+							class="badge text-capitalize fw-bold bg-gradient-secondary">{{ worker.position.name }}</span>
+						</p>
 					</div>
 					<div class="card-body">
 						<div class="row ms-5">
 							<div class="col-md-6 border-start border-primary border-2">
-								<p><strong>First
-									Name:</strong> {{ worker.first_name|capfirst }}</p>
-								<p><strong>Last Name:</strong> {{ worker.last_name|capfirst }}
+								<p>
+									<strong>First
+										Name:
+									</strong>
+									{{ worker.first_name|capfirst }}</p>
+								<p>
+									<strong>Last Name:</strong>
+									{{ worker.last_name|capfirst }}
 								</p>
-								<p><strong>Email:</strong> <i>{{ worker.email }}</i></p>
+								<p>
+									<strong>Email:</strong>
+									<i>{{ worker.email }}</i></p>
 							</div>
 							<div class="col-md-6 border-start border-primary border-2">
-								<p><strong>Total Tasks:</strong>
-									<span class="fw-bold" id="state1"
-												countTo="{{ worker.tasks.count }}">
-                  {{ worker.tasks.count }}
-                </span>
+								<p>
+									<strong>Total Tasks:</strong>
+									<span
+										class="fw-bold"
+										id="state1"
+										countTo="{{ worker.tasks.count }}">
+										{{ worker.tasks.count }}
+									</span>
 								</p>
-								<p><strong>Active Tasks:</strong>
+								<p>
+									<strong>Active Tasks:</strong>
 									{% if active_tasks > 0 %}
-										<span class="fw-bold" id="state2"
-													countTo="{{ active_tasks }}">
-                    {{ active_tasks }}
-                  </span>
+										<span
+											class="fw-bold"
+											id="state2"
+											countTo="{{ active_tasks }}">
+											{{ active_tasks }}
+										</span>
+										</span>
 									{% else %}
 										<span class="text-muted">No active tasks</span>
 									{% endif %}
@@ -50,26 +66,49 @@
 			</div>
 
 			<div class="position-absolute w-100 z-index-1 bottom-0">
-				<svg class="waves" xmlns="http://www.w3.org/2000/svg"
-						 xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 40"
-						 preserveAspectRatio="none" shape-rendering="auto">
+				<svg
+					class="waves"
+					xmlns="http://www.w3.org/2000/svg"
+					xmlns:xlink="http://www.w3.org/1999/xlink"
+					viewBox="0 24 150 40"
+					preserveAspectRatio="none"
+					shape-rendering="auto">
 					<defs>
-						<path id="gentle-wave"
-									d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
+						<path
+							id="gentle-wave"
+							d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
 					</defs>
 					<g class="moving-waves">
-						<use xlink:href="#gentle-wave" x="48" y="-1"
-								 fill="rgba(255,255,255,0.40)"/>
-						<use xlink:href="#gentle-wave" x="48" y="3"
-								 fill="rgba(255,255,255,0.35)"/>
-						<use xlink:href="#gentle-wave" x="48" y="5"
-								 fill="rgba(255,255,255,0.25)"/>
-						<use xlink:href="#gentle-wave" x="48" y="8"
-								 fill="rgba(255,255,255,0.20)"/>
-						<use xlink:href="#gentle-wave" x="48" y="13"
-								 fill="rgba(255,255,255,0.15)"/>
-						<use xlink:href="#gentle-wave" x="48" y="16"
-								 fill="rgba(255,255,255,0.95)"/>
+						<use
+							xlink:href="#gentle-wave"
+							x="48"
+							y="-1"
+							fill="rgba(255,255,255,0.40)"></use>
+						<use
+							xlink:href="#gentle-wave"
+							x="48"
+							y="3"
+							fill="rgba(255,255,255,0.35)"></use>
+						<use
+							xlink:href="#gentle-wave"
+							x="48"
+							y="5"
+							fill="rgba(255,255,255,0.25)"></use>
+						<use
+							xlink:href="#gentle-wave"
+							x="48"
+							y="8"
+							fill="rgba(255,255,255,0.20)"></use>
+						<use
+							xlink:href="#gentle-wave"
+							x="48"
+							y="13"
+							fill="rgba(255,255,255,0.15)"></use>
+						<use
+							xlink:href="#gentle-wave"
+							x="48"
+							y="16"
+							fill="rgba(255,255,255,0.95)"></use>
 					</g>
 				</svg>
 			</div>
@@ -85,13 +124,16 @@
 					{% if not task.is_completed %}
 						<div class="col-md-6">
 							<div class="card">
-								<div class="card-header bg-gradient-primary text-white">
+								<div class="card-header bg-gradient-faded-dark text-white">
 									<h5 class="card-title text-uppercase mb-0">{{ task.name }}</h5>
 								</div>
 								<div class="card-body">
 									<div class="container border-start border-primary border-2">
-										<p><strong>Type:</strong> {{ task.task_type.name }}</p>
-										<p><strong>Priority:</strong>
+										<p>
+											<strong>Type:</strong>
+											{{ task.task_type.name }}</p>
+										<p>
+											<strong>Priority:</strong>
 											{% if task.priority == 4 %}
 												<span class="badge bg-gradient-danger">Urgent</span>
 											{% elif task.priority == 3 %}
@@ -102,7 +144,8 @@
 												<span class="badge bg-gradient-success">Low</span>
 											{% endif %}
 										</p>
-										<p><strong>Deadline:</strong>
+										<p>
+											<strong>Deadline:</strong>
 											{% if task.deadline < today %}
 												<span class="badge bg-gradient-danger">Overdue</span>
 												{{ task.deadline }}
@@ -112,7 +155,9 @@
 										</p>
 									</div>
 									<div class="text-center mt-3">
-										<a href="#" class="btn btn-outline-primary btn-sm">
+										<a
+											href="{% url "task_manager:task_detail" task.pk %}"
+											class="btn btn-outline-primary btn-sm">
 											View Task Details
 										</a>
 									</div>
@@ -127,9 +172,9 @@
 			{% endif %}
 		</div>
 
-		<!-- Completed Tasks Section -->
+		<!--   Tasks Section -->
 		<div class="mt-5">
-			<h4 class="text-uppercase text-primary m-5">Completed Tasks</h4>
+			<h4 class="text-uppercase text-primary m-5"> Resolved Tasks</h4>
 			<div class="row g-3">
 				{% for task in tasks %}
 					{% if task.is_completed %}
@@ -140,8 +185,11 @@
 								</div>
 								<div class="card-body">
 									<div class="container border-start border-primary border-2">
-										<p><strong>Type:</strong> {{ task.task_type.name }}</p>
-										<p><strong>Priority:</strong>
+										<p>
+											<strong>Type:</strong>
+											{{ task.task_type.name }}</p>
+										<p>
+											<strong>Priority:</strong>
 											{% if task.priority == 4 %}
 												<span class="badge bg-gradient-danger">Urgent</span>
 											{% elif task.priority == 3 %}
@@ -152,10 +200,14 @@
 												<span class="badge bg-gradient-success">Low</span>
 											{% endif %}
 										</p>
-										<p><strong>Deadline:</strong> {{ task.deadline }}</p>
+										<p>
+											<strong>Deadline:</strong>
+											{{ task.deadline }}</p>
 									</div>
 									<div class="text-center mt-3">
-										<a href="#" class="btn btn-outline-primary btn-sm">
+										<a
+											href="{% url "task_manager:task_detail" task.pk %}"
+											class="btn btn-outline-primary btn-sm">
 											View Task Details
 										</a>
 									</div>
@@ -166,7 +218,7 @@
 				{% endfor %}
 			</div>
 			{% if active_tasks == total_tasks %}
-				<p class="text-muted">No completed tasks assigned.</p>
+				<p class="text-muted">No Resolved tasks assigned.</p>
 			{% endif %}
 		</div>
 	</div>
