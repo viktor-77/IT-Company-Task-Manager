@@ -5,16 +5,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import Q
-from django.http import HttpResponseForbidden
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
 from django.views.generic import (
 	ListView,
 	DetailView,
-	# CreateView,
-	# DeleteView,
+	CreateView,
+	DeleteView,
 )
 from django.views.generic import UpdateView
 
@@ -31,7 +29,7 @@ def index(request):
 	total_users = get_user_model().objects.count()
 	last_tasks = Task.objects.all().order_by('-id')[:3]
 	return render(
-		request, 'pages/404.html', {
+		request, 'pages/index.html', {
 			'total_tasks': total_tasks,
 			'active_tasks': active_tasks,
 			'total_users': total_users,
@@ -136,10 +134,11 @@ class TaskUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 	model = Task
 	form_class = TaskForm
 	template_name = "pages/task_form.html"
+	success_url = reverse_lazy("task_manager:task_list")
 	success_message = "Successfully updated"
-	
-	def get_success_url(self):
-		return reverse_lazy(
-			"task_manager:task_detail", kwargs={"pk": self.object.pk}
-		)
-	
+
+
+class TaskDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+	model = Task
+	success_url = reverse_lazy("task_manager:task_list")
+	success_message = "Successfully deleted"
