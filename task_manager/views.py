@@ -4,11 +4,15 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q
+from django.http import HttpResponseForbidden
+from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import (
+	View,
 	ListView,
 	DetailView,
 	CreateView,
@@ -27,13 +31,11 @@ def index(request):
 		is_completed=False
 	).count()
 	total_users = get_user_model().objects.count()
-	last_tasks = Task.objects.all().order_by('-id')[:3]
 	return render(
 		request, 'pages/index.html', {
 			'total_tasks': total_tasks,
 			'active_tasks': active_tasks,
 			'total_users': total_users,
-			"last_tasks": last_tasks,
 		}
 	)
 
@@ -47,7 +49,7 @@ class CustomLoginView(LoginView):
 		return super().dispatch(request, *args, **kwargs)
 
 
-class WorkerListView(LoginRequiredMixin, ListView):
+class WorkerListView(ListView):
 	model = Worker
 	context_object_name = "worker_list"
 	template_name = "pages/worker_list.html"
@@ -82,10 +84,11 @@ class WorkerDetailView(LoginRequiredMixin, DetailView):
 		context["active_tasks"] = self.object.tasks.filter(
 			is_completed=False
 		).count()
+		
 		return context
 
 
-class TaskListView(LoginRequiredMixin, ListView):
+class TaskListView(ListView):
 	model = Task
 	context_object_name = "task_list"
 	template_name = "pages/task_list.html"
@@ -113,7 +116,7 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		context['is_coworker'] = (
-			self.request.user in self.object.assignees.all()
+			self.object.assignees.filter(pk=self.request.user.pk).exists()
 		)
 		return context
 
@@ -122,7 +125,6 @@ class TaskCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 	model = Task
 	form_class = TaskForm
 	template_name = "pages/task_form.html"
-	success_message = "Created task %(name)s"
 	
 	def get_success_url(self):
 		return reverse_lazy(
@@ -135,10 +137,22 @@ class TaskUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 	form_class = TaskForm
 	template_name = "pages/task_form.html"
 	success_url = reverse_lazy("task_manager:task_list")
-	success_message = "Successfully updated"
+	
+	def get_success_url(self):
+		next_url = self.request.GET.get('next')
+		if next_url:
+			return next_url
+		return reverse_lazy(
+			'task_manager:worker_detail', kwargs={'pk': self.request.user.pk}
+		)
 
 
 class TaskDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
 	model = Task
+	template_name = "pages/confirm_delete.html"
 	success_url = reverse_lazy("task_manager:task_list")
-	success_message = "Successfully deleted"
+	
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['previous_page'] = self.request.META.get('HTTP_REFERER', '/')
+		return context
