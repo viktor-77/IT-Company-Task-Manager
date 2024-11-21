@@ -1,5 +1,6 @@
 from django import forms
 from .models import Task
+from .models import Worker
 
 
 class TaskForm(forms.ModelForm):
@@ -38,3 +39,58 @@ class TaskForm(forms.ModelForm):
 			"task_type": forms.RadioSelect(),
 			"assignees": forms.SelectMultiple(attrs={"class": "form-select"})
 		}
+
+
+class WorkerForm(forms.ModelForm):
+	class Meta:
+		model = Worker
+		fields = (
+			"username",
+			"first_name",
+			"last_name",
+			"email",
+			"position",
+			"password",
+		)
+		widgets = {
+			"username": forms.TextInput(
+				attrs={
+					"class": "form-control",
+					"placeholder": "Enter your username",
+					"autocomplete": "new-username"
+				}
+			),
+			"first_name": forms.TextInput(
+				attrs={
+					"class": "form-control",
+					"placeholder": "Enter your first name"
+				}
+			),
+			"last_name": forms.TextInput(
+				attrs={
+					"class": "form-control",
+					"placeholder": "Enter your last name"
+				}
+			),
+			"email": forms.EmailInput(
+				attrs={
+					"class": "form-control", "placeholder": "Enter your email"
+				}
+			),
+			"position": forms.RadioSelect(),
+			"password": forms.PasswordInput(
+				attrs={
+					"class": "form-control",
+					"placeholder": "Enter secure password",
+					"autocomplete": "new-password"
+				}
+			),
+		}
+	
+	def clean(self):
+		cleaned_data = super().clean()
+		
+		if not self.instance.pk and not cleaned_data.get('password'):
+			self.add_error('password', 'This field is required for new users.')
+		
+		return cleaned_data

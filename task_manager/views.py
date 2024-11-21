@@ -1,28 +1,20 @@
 from datetime import date
-
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model,login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
-from django.contrib.messages.views import SuccessMessageMixin
-from django.core.exceptions import PermissionDenied
 from django.db.models import Q
-from django.http import HttpResponseForbidden
-from django.shortcuts import get_object_or_404
-from django.shortcuts import redirect
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import (
-	View,
 	ListView,
 	DetailView,
 	CreateView,
 	DeleteView,
 )
 from django.views.generic import UpdateView
-
 from task_manager.forms import TaskForm
-from task_manager.models import Task
-from task_manager.models import Worker
+from task_manager.forms import WorkerForm
+from task_manager.models import Worker, Task
 
 
 def index(request):
@@ -88,6 +80,38 @@ class WorkerDetailView(LoginRequiredMixin, DetailView):
 		return context
 
 
+class WorkerCreateView(CreateView):
+	model = Worker
+	form_class = WorkerForm
+	template_name = "pages/worker_form.html"
+	
+	def form_valid(self, form):
+		worker = form.save(commit=False)
+		worker.set_password(form.cleaned_data["password"])
+		worker.save()
+		login(self.request, worker)
+		return super().form_valid(form)
+	
+	def get_success_url(self):
+		return reverse_lazy(
+			"task_manager:worker_detail", kwargs={"pk": self.object.pk}
+		)
+
+
+class WorkerUpdateView(UpdateView):
+	model = Worker
+	form_class = WorkerForm
+	template_name = "pages/worker_form.html"
+	
+	def get_success_url(self):
+		next_url = self.request.GET.get('next')
+		if next_url:
+			return next_url
+		return reverse_lazy(
+			'task_manager:worker_detail', kwargs={'pk': self.request.user.pk}
+		)
+
+
 class TaskListView(ListView):
 	model = Task
 	context_object_name = "task_list"
@@ -121,7 +145,7 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
 		return context
 
 
-class TaskCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+class TaskCreateView(LoginRequiredMixin, CreateView):
 	model = Task
 	form_class = TaskForm
 	template_name = "pages/task_form.html"
@@ -132,7 +156,7 @@ class TaskCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 		)
 
 
-class TaskUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+class TaskUpdateView(LoginRequiredMixin, UpdateView):
 	model = Task
 	form_class = TaskForm
 	template_name = "pages/task_form.html"
@@ -147,7 +171,7 @@ class TaskUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 		)
 
 
-class TaskDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+class TaskDeleteView(LoginRequiredMixin, DeleteView):
 	model = Task
 	template_name = "pages/confirm_delete.html"
 	success_url = reverse_lazy("task_manager:task_list")
