@@ -10,10 +10,29 @@
 			class="page-header min-vh-65 relative"
 			style="background-image: url('{% static 'img/curved-images/curved.jpg' %}')">
 			<div class="container w-70">
-				<div class="card">
-					<div class="card-header bg-gradient-light text-white text-center position-relative">
+				<div class="card mt-7 mt-lg-0">
+					<div class="card-header bg-gradient-faded-light-vertical text-white text-center position-relative">
+						<style>
+                @media (max-width: 576px) {
+                    .custom-position {
+                        right: -70px !important;
+                    }
+                }
+						</style>
 						{% if is_coworker %}
-							<div class="d-flex gap-3 flex-row-reverse">
+							<div class="d-flex gap-3 flex-column align-items-end justify-content-end position-absolute custom-position"
+									 style="right:24px">
+								<a href="{% url "task_manager:task_delete" task.pk %}">
+									<div
+										class="btn bg-gradient-danger btn-icon m-0"
+										type="button">
+										<div class="d-flex align-items-center">
+											<i
+												class="fas fa-trash"
+												aria-hidden="true"></i>
+										</div>
+									</div>
+								</a>
 								<a href="{% url "task_manager:task_update" task.pk %}?next={{ request.path }}">
 									<div
 										class="btn bg-gradient-primary btn-icon m-0"
@@ -26,27 +45,16 @@
 										</div>
 									</div>
 								</a>
-								<a href="{% url "task_manager:task_delete" task.pk %}">
-									<div
-										class="btn bg-gradient-danger btn-icon m-0"
-										type="button">
-										<div class="d-flex align-items-center">
-											<i
-												class="fas fa-trash"
-												aria-hidden="true"></i>
-										</div>
-									</div>
-								</a>
 							</div>
 						{% endif %}
 						<h2>{{ task }}</h2>
-						<h5 class="mb-3">Task type:
+						<h5 class="my-3">Task type:
 							<span
 								class="badge text-capitalize fw-bold  bg-gradient-secondary ">{{ task.task_type }}</span>
 						</h5>
 					</div>
 					<div class="card-body">
-						<div class="row ms-5">
+						<div class="row  ms-3 ms-lg-5">
 							<div class="col-md-6 border-start border-primary border-2">
 								<p>
 									<strong>Created at:</strong>

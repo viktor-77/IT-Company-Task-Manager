@@ -103,6 +103,13 @@ class WorkerUpdateView(UpdateView):
 	form_class = WorkerForm
 	template_name = "pages/worker_form.html"
 	
+	def form_valid(self, form):
+		worker = form.save(commit=False)
+		worker.set_password(form.cleaned_data["password"])
+		worker.save()
+		login(self.request, worker)
+		return super().form_valid(form)
+	
 	def get_success_url(self):
 		next_url = self.request.GET.get('next')
 		if next_url:

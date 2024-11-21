@@ -42,6 +42,8 @@ class TaskForm(forms.ModelForm):
 
 
 class WorkerForm(forms.ModelForm):
+	password = forms.CharField(widget=forms.PasswordInput, required=False)
+	
 	class Meta:
 		model = Worker
 		fields = (
@@ -86,6 +88,11 @@ class WorkerForm(forms.ModelForm):
 				}
 			),
 		}
+	
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		if not self.instance.pk:
+			self.fields['password'].required = True
 	
 	def clean(self):
 		cleaned_data = super().clean()

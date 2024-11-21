@@ -14,21 +14,6 @@
 			<div class="container">
 				<div class="card">
 					<div class="card-header bg-gradient-faded-light-vertical text-white text-center">
-						{% if user.pk|stringformat:"s" in request.path %}
-							<div class="d-flex gap-3 flex-row-reverse">
-								<a href="{% url "task_manager:worker_update" worker.pk %}?next={{ request.path }}">
-									<div
-										class="btn bg-gradient-primary btn-icon m-0"
-										type="button">
-										<div class="d-flex align-items-center">
-											<i
-												class="fas fa-edit"
-												aria-hidden="true"></i>
-										</div>
-									</div>
-								</a>
-							</div>
-						{% endif %}
 						<h2>{{ worker.username|capfirst }}</h2>
 						<p class="mb-0">Position:
 							<span
@@ -75,6 +60,20 @@
 										<span class="text-muted">No active tasks</span>
 									{% endif %}
 								</p>
+								{% if user.pk|stringformat:"s" in request.path %}
+
+									<a href="{% url "task_manager:worker_update" worker.pk %}?next={{ request.path }}">
+										<div
+											class="btn bg-gradient-primary btn-icon m-0"
+											type="button">
+											<div class="d-flex align-items-center">
+												<i
+													class="fas fa-edit"
+													aria-hidden="true"></i>
+											</div>
+										</div>
+									</a>
+								{% endif %}
 							</div>
 						</div>
 					</div>
