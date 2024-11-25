@@ -11,9 +11,9 @@
 		<div
 			class="page-header min-vh-65 relative"
 			style="background-image: url('{% static 'img/curved-images/curved.jpg' %}')">
-			<div class="container">
+			<div class="container w-65">
 				<div class="card">
-					<div class="card-header bg-gradient-faded-light-vertical text-white text-center">
+					<div class="card-header bg-gradient-faded-light-vertical text-white text-center border border-1">
 						<h2>{{ worker.username|capfirst }}</h2>
 						<p class="mb-0">Position:
 							<span
@@ -60,8 +60,7 @@
 										<span class="text-muted">No active tasks</span>
 									{% endif %}
 								</p>
-								{% if user.pk|stringformat:"s" in request.path %}
-
+								{% if user.is_superuser or user.pk|stringformat:"s" in request.path %}
 									<a href="{% url "task_manager:worker_update" worker.pk %}?next={{ request.path }}">
 										<div
 											class="btn bg-gradient-primary btn-icon m-0"
@@ -97,7 +96,7 @@
 							<div class="card">
 								<div class="card-header bg-gradient-faded-dark text-white d-flex align-items-center justify-content-between border border-1">
 									<h5 class="card-title text-uppercase mb-0">{{ task }}</h5>
-									{% if user.pk|stringformat:"s" in request.path %}
+									{% if user.is_superuser or user.pk|stringformat:"s" in request.path %}
 										<a href="{% url "task_manager:task_update" task.pk %}?next={{ request.path }}">
 											<i
 												class="fas fa-edit me-2 border border-1 p-3 card"
@@ -160,7 +159,7 @@
 							<div class="card shadow-sm border-0">
 								<div class="card-header bg-gradient-success text-white d-flex align-items-center justify-content-between border border-1 ">
 									<h5 class="card-title text-uppercase mb-0">{{ task }}</h5>
-									{% if user.pk|stringformat:"s" in request.path %}
+									{% if user.is_superuser or user.pk|stringformat:"s" in request.path %}
 										<a href="{% url "task_manager:task_update" task.pk %}?next={{ request.path }}">
 											<i
 												class="fas fa-edit me-2 border border-1 p-3 card"

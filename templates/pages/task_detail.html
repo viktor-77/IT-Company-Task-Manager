@@ -13,13 +13,13 @@
 				<div class="card mt-7 mt-lg-0">
 					<div class="card-header bg-gradient-faded-light-vertical text-white text-center position-relative">
 						<style>
-                @media (max-width: 576px) {
+                @media (max-width: 750px) {
                     .custom-position {
                         right: -70px !important;
                     }
                 }
 						</style>
-						{% if is_coworker %}
+						{% if is_coworker or user.is_superuser %}
 							<div class="d-flex gap-3 flex-column align-items-end justify-content-end position-absolute custom-position"
 									 style="right:24px">
 								<a href="{% url "task_manager:task_delete" task.pk %}">
@@ -66,13 +66,14 @@
 								</p>
 							</div>
 							<div class="col-md-6 border-start border-primary border-2">
-								<p>
+								<p class="fw-bold">
 									<strong>Task status:</strong>
 									{% if task.is_completed %}
-										<span class="badge bg-gradient-success  m-auto text-capitalize">Resolved</span>
+										<span class="text-gradient text-success fw-bold">Resolved
+											<i class="fas fa-check-circle"></i></span>
 									{% else %}
-										<span class="badge bg-gradient-info  m-auto text-capitalize">In
-											progress
+										<span class="text-info  fw-bold">In
+											progress <i class="fas fa-spinner"></i>
 										</span>
 									{% endif %}
 								</p>

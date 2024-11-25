@@ -1,7 +1,9 @@
 from datetime import date
-from django.contrib.auth import get_user_model,login
+
+from django.contrib.auth import get_user_model, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
@@ -9,11 +11,14 @@ from django.views.generic import (
 	ListView,
 	DetailView,
 	CreateView,
+	UpdateView,
 	DeleteView,
 )
-from django.views.generic import UpdateView
-from task_manager.forms import TaskForm
-from task_manager.forms import WorkerForm
+
+from task_manager.forms import SearchForm
+from task_manager.forms import (
+	TaskForm, WorkerCreateForm, WorkerUpdateForm,
+)
 from task_manager.models import Worker, Task
 
 
@@ -32,6 +37,16 @@ def index(request):
 	)
 
 
+class SearchMixin:
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context["search_form"] = SearchForm(
+			initial={"query": self.request.GET.get("query", "").strip()}
+		)
+		
+		return context
+
+
 class CustomLoginView(LoginView):
 	"""Prevents authenticated users get login page"""
 	
@@ -41,7 +56,7 @@ class CustomLoginView(LoginView):
 		return super().dispatch(request, *args, **kwargs)
 
 
-class WorkerListView(ListView):
+class WorkerListView(SearchMixin, ListView):
 	model = Worker
 	context_object_name = "worker_list"
 	template_name = "pages/worker_list.html"
@@ -49,7 +64,7 @@ class WorkerListView(ListView):
 	
 	def get_queryset(self):
 		queryset = Worker.objects.select_related("position")
-		search_query = self.request.GET.get("search")
+		search_query = self.request.GET.get("query", "").strip()
 		
 		if search_query:
 			queryset = queryset.filter(
@@ -81,45 +96,81 @@ class WorkerDetailView(LoginRequiredMixin, DetailView):
 
 
 class WorkerCreateView(CreateView):
-	model = Worker
-	form_class = WorkerForm
+	model = get_user_model()
+	form_class = WorkerCreateForm
 	template_name = "pages/worker_form.html"
-	
-	def form_valid(self, form):
-		worker = form.save(commit=False)
-		worker.set_password(form.cleaned_data["password"])
-		worker.save()
-		login(self.request, worker)
-		return super().form_valid(form)
 	
 	def get_success_url(self):
 		return reverse_lazy(
 			"task_manager:worker_detail", kwargs={"pk": self.object.pk}
 		)
-
-
-class WorkerUpdateView(UpdateView):
-	model = Worker
-	form_class = WorkerForm
-	template_name = "pages/worker_form.html"
 	
 	def form_valid(self, form):
 		worker = form.save(commit=False)
+		if form.cleaned_data["position"].name == "Manager":
+			worker.is_superuser = True
+			worker.is_staff = True
+		
 		worker.set_password(form.cleaned_data["password"])
 		worker.save()
 		login(self.request, worker)
+		
 		return super().form_valid(form)
 	
+	def dispatch(self, request, *args, **kwargs):
+		if request.user.is_authenticated:
+			return redirect("task_manager:index")
+		
+		return super().dispatch(request, *args, **kwargs)
+
+
+class WorkerUpdateView(LoginRequiredMixin, UpdateView):
+	model = get_user_model()
+	form_class = WorkerUpdateForm
+	template_name = "pages/worker_form.html"
+	
+	def dispatch(self, request, *args, **kwargs):
+		worker = self.get_object()
+		if not (request.user.is_superuser or worker.pk == request.user.pk):
+			raise PermissionDenied(
+				"You are not allowed to edit this user."
+			)
+		return super().dispatch(request, *args, **kwargs)
+	
 	def get_success_url(self):
-		next_url = self.request.GET.get('next')
-		if next_url:
+		if next_url := self.request.GET.get('next'):
 			return next_url
 		return reverse_lazy(
 			'task_manager:worker_detail', kwargs={'pk': self.request.user.pk}
 		)
+	
+	def form_valid(self, form):
+		worker = form.save(commit=False)
+		
+		if password := form.cleaned_data["password"]:
+			worker.set_password(password)
+			if worker.pk == self.request.user.pk:
+				login(self.request, worker)
+		else:
+			del worker.password
+		worker.save()
+		
+		return super().form_valid(form)
 
 
-class TaskListView(ListView):
+class WorkerDeleteView(LoginRequiredMixin, DeleteView):
+	model = get_user_model()
+	template_name = "pages/worker_confirm_delete.html"
+	success_url = reverse_lazy("task_manager:worker_list")
+	
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context["previous_page"] = self.request.META.get("HTTP_REFERER", "/")
+		
+		return context
+
+
+class TaskListView(SearchMixin, ListView):
 	model = Task
 	context_object_name = "task_list"
 	template_name = "pages/task_list.html"
@@ -129,9 +180,9 @@ class TaskListView(ListView):
 		queryset = Task.objects.select_related("task_type").prefetch_related(
 			"assignees"
 		)
-		search_query = self.request.GET.get("search")
+		search_query = self.request.GET.get("query", "").strip()
 		if search_query:
-			queryset = queryset.filter(Q(name__icontains=search_query))
+			queryset = queryset.filter(name__icontains=search_query)
 		
 		return queryset
 
@@ -169,6 +220,15 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
 	template_name = "pages/task_form.html"
 	success_url = reverse_lazy("task_manager:task_list")
 	
+	def dispatch(self, request, *args, **kwargs):
+		task = self.get_object()
+		is_user_assigner = task.assignees.filter(pk=request.user.pk).exists()
+		if not (request.user.is_superuser or is_user_assigner):
+			raise PermissionDenied(
+				"You are not allowed to edit this task."
+			)
+		return super().dispatch(request, *args, **kwargs)
+	
 	def get_success_url(self):
 		next_url = self.request.GET.get('next')
 		if next_url:
@@ -186,4 +246,5 @@ class TaskDeleteView(LoginRequiredMixin, DeleteView):
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		context['previous_page'] = self.request.META.get('HTTP_REFERER', '/')
+		
 		return context

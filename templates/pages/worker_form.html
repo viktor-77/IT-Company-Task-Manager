@@ -19,13 +19,14 @@
 					<div class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-lg-0 mx-auto">
 						<div class="card card-plain mt-6">
 							<div class="card-header pb-0 text-left">
-								<h4 class="font-weight-bolder">{{ task|yesno:"Update,Create" }}
-									Worker
+								<h4 class="font-weight-bolder">
+									{{ worker|yesno:"Update,Create" }} account
 								</h4>
 							</div>
 							<div class="card-body">
 
-								<form action="" method="post">
+								<form action=""
+											method="post">
 									{% csrf_token %}
 
 									<div class="mb-3">
@@ -68,44 +69,47 @@
 										{{ form.email.errors }}
 									</div>
 
-									<div class="mb-3">
-										<div class="text-primary mb-2">
-											{{ form.position.label }}
-										</div>
-										{% for value, label in form.fields.position.choices %}
-											<div class="form-check">
-												<input
-													class="form-check-input"
-													type="radio"
-													id="id_position_{{ forloop.counter }}"
-													name="position"
-													value={{ value }}
-														{% if form.data.position|stringformat:"s" == value|stringformat:"s" or form.initial.position|stringformat:"s" == value|stringformat:"s" %}
-															checked
-														{% endif %}>
-												<label class="form-check-label"
-															 for="id_position_{{ forloop.counter }}">
-													{{ label }}
-												</label>
-											</div>
-										{% endfor %}
-									</div>
-									<div class="text-danger">
-										{{ form.position.errors }}
-									</div>
-
+									{% if not user.is_authenticated %}
 										<div class="mb-3">
 											<div class="text-primary mb-2">
-												{{ form.password.label }}
+												{{ form.position.label }}
 											</div>
-											{{ form.password }}
+											{% for value, label in form.fields.position.choices %}
+												<div class="form-check">
+													<input
+														class="form-check-input"
+														type="radio"
+														id="id_position_{{ forloop.counter }}"
+														name="position"
+														value={{ value }}
+															{% if form.data.position|stringformat:"s" == value|stringformat:"s" or form.initial.position|stringformat:"s" == value|stringformat:"s" %}
+																checked
+															{% endif %}>
+													<label class="form-check-label"
+																 for="id_position_{{ forloop.counter }}">
+														{{ label }}
+													</label>
+												</div>
+											{% endfor %}
 										</div>
 										<div class="text-danger">
-											{{ form.password.errors }}
+											{{ form.position.errors }}
 										</div>
+									{% endif %}
+
+									<div class="mb-3">
+										<div class="text-primary mb-2">
+											{{ form.password.label }}
+										</div>
+										{{ form.password }}
+									</div>
+									<div class="text-danger">
+										{{ form.password.errors }}
+									</div>
 
 									<button type="submit"
-													class="btn btn-primary">Submit
+													class="btn btn-primary">
+										Submit
 									</button>
 								</form>
 

@@ -13,12 +13,42 @@
 			style="background-image: url('{% static 'img/curved-images/curved.jpg' %}')">
 			<div class="container my-3">
 
-				<!-- Heading -->
-				<div class="row">
-					<div class="col-lg-7 text-center mx-auto">
-						<h1 class="text-white pt-3 mt-n5 mb-2">Tasks</h1>
+{#				<!-- Heading -->#}
+{#				<div class="row">#}
+{#					<div class="col-lg-7 text-center mx-auto">#}
+{#						<h1 class="text-white pt-3 mt-n5 mb-2">Tasks</h1>#}
+{#					</div>#}
+{#				</div>#}
+
+				<!-- Search -->
+				<div class="row text-center py-2 mt-3">
+					<div class="col-6 mx-auto">
+						<div class="input-group mb-5">
+							<form action=""
+										method="get"
+										class="w-80 m-auto d-flex align-items-center">
+								{{ search_form.query }}
+								<button type="submit"
+												class="btn btn-primary m-0 ms-3"
+												data-bs-toggle="tooltip"
+												data-bs-placement="top"
+												title="Search">
+									<i class="fa-solid fa-magnifying-glass"></i>
+								</button>
+								{% if request.GET.query %}
+									<a href="{% querystring query='' page=None %}"
+										 data-bs-toggle="tooltip"
+										 data-bs-placement="top"
+										 title="Reset"
+										 class="btn btn-danger m-0 ms-3">
+										<i class="fa-solid fa-xmark"></i>
+									</a>
+								{% endif %}
+							</form>
+						</div>
 					</div>
 				</div>
+
 				<!-- Table -->
 				<div class="table-responsive shadow">
 					<table
@@ -77,10 +107,11 @@
 									<td><i>{{ task.deadline }}</i></td>
 									<td>
 										{% if task.is_completed %}
-											<span class="badge bg-gradient-success  m-auto text-capitalize">Resolved</span>
+											<span class="text-gradient text-success fw-bold">Resolved
+												<i class="fas fa-check-circle"></i></span>
 										{% else %}
-											<span class="badge bg-gradient-info  m-auto text-capitalize">In
-												progress
+											<span class="text-info  fw-bold">In
+												progress <i class="fas fa-spinner"></i>
 											</span>
 										{% endif %}</td>
 									<td>

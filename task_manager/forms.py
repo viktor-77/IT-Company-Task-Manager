@@ -1,6 +1,11 @@
 from django import forms
+from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
+from django.core.validators import MinLengthValidator
+
 from .models import Task
-from .models import Worker
+from .validators import get_min_length_validator
 
 
 class TaskForm(forms.ModelForm):
@@ -41,63 +46,100 @@ class TaskForm(forms.ModelForm):
 		}
 
 
-class WorkerForm(forms.ModelForm):
-	password = forms.CharField(widget=forms.PasswordInput, required=False)
+class WorkerBaseForm(forms.ModelForm):
+	username = forms.CharField(
+		widget=forms.TextInput(
+			attrs={
+				"class": "form-control",
+				"placeholder": "Enter your username",
+				"autocomplete": "new-username",
+			}
+		),
+		validators=[get_min_length_validator()]
+	)
+	first_name = forms.CharField(
+		widget=forms.TextInput(
+			attrs={
+				"class": "form-control",
+				"placeholder": "Enter your first name",
+			}
+		),
+		validators=[get_min_length_validator()]
+	)
+	last_name = forms.CharField(
+		widget=forms.TextInput(
+			attrs={
+				"class": "form-control",
+				"placeholder": "Enter your last name",
+			}
+		),
+		validators=[get_min_length_validator()]
+	)
 	
-	class Meta:
-		model = Worker
+	def clean_password(self):
+		if password := self.cleaned_data.get('password'):
+			try:
+				validate_password(password, self.instance)
+			except ValidationError as e:
+				self.add_error('password', e)
+		return password
+
+
+class MetaBaseForm:
+	model = get_user_model()
+	fields = (
+		"username",
+		"first_name",
+		"last_name",
+		"email",
+		"position",
+		"password",
+	)
+	widgets = {
+		"email": forms.EmailInput(
+			attrs={
+				"class": "form-control",
+				"placeholder": "Enter your email",
+			}
+		),
+		"position": forms.RadioSelect(),
+		"password": forms.PasswordInput(
+			attrs={
+				"class": "form-control",
+				"placeholder": "Enter your password",
+				"autocomplete": "new-password",
+				
+			}
+		)
+	}
+
+
+class WorkerCreateForm(WorkerBaseForm):
+	class Meta(MetaBaseForm):
+		pass
+
+
+class WorkerUpdateForm(WorkerBaseForm):
+	password = forms.CharField(
+		required=False,
+		widget=MetaBaseForm.widgets['password'],
+	)
+	
+	class Meta(MetaBaseForm):
 		fields = (
 			"username",
 			"first_name",
 			"last_name",
 			"email",
-			"position",
 			"password",
 		)
-		widgets = {
-			"username": forms.TextInput(
-				attrs={
-					"class": "form-control",
-					"placeholder": "Enter your username",
-					"autocomplete": "new-username"
-				}
-			),
-			"first_name": forms.TextInput(
-				attrs={
-					"class": "form-control",
-					"placeholder": "Enter your first name"
-				}
-			),
-			"last_name": forms.TextInput(
-				attrs={
-					"class": "form-control",
-					"placeholder": "Enter your last name"
-				}
-			),
-			"email": forms.EmailInput(
-				attrs={
-					"class": "form-control", "placeholder": "Enter your email"
-				}
-			),
-			"position": forms.RadioSelect(),
-			"password": forms.PasswordInput(
-				attrs={
-					"class": "form-control",
-					"placeholder": "Enter secure password",
-					"autocomplete": "new-password"
-				}
-			),
-		}
-	
-	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
-		if not self.instance.pk:
-			self.fields['password'].required = True
-	
-	def clean(self):
-		cleaned_data = super().clean()
-		
-		if not self.instance.pk and not cleaned_data.get('password'):
-			self.add_error('password', 'This field is required for new users.')
-		
-		return cleaned_data
+
+
+class SearchForm(forms.Form):
+	query = forms.CharField(
+		max_length=100,
+		label="",
+		widget=forms.TextInput(
+			attrs={"placeholder": "Search...", "class": "form-control"}
+		)
+	)
