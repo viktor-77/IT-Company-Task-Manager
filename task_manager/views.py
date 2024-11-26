@@ -47,8 +47,8 @@ class SearchMixin:
 		return context
 
 
-class CustomLoginView(LoginView):
-	"""Prevents authenticated users get login page"""
+class RedirectAuthenticatedUserLoginView(LoginView):
+	"""Redirects authenticated users to the index page."""
 	
 	def dispatch(self, request, *args, **kwargs):
 		if request.user.is_authenticated:
