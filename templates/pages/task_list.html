@@ -13,12 +13,12 @@
 			style="background-image: url('{% static 'img/curved-images/curved.jpg' %}')">
 			<div class="container my-3">
 
-{#				<!-- Heading -->#}
-{#				<div class="row">#}
-{#					<div class="col-lg-7 text-center mx-auto">#}
-{#						<h1 class="text-white pt-3 mt-n5 mb-2">Tasks</h1>#}
-{#					</div>#}
-{#				</div>#}
+				{#				<!-- Heading -->#}
+				{#				<div class="row">#}
+				{#					<div class="col-lg-7 text-center mx-auto">#}
+				{#						<h1 class="text-white pt-3 mt-n5 mb-2">Tasks</h1>#}
+				{#					</div>#}
+				{#				</div>#}
 
 				<!-- Search -->
 				<div class="row text-center py-2 mt-3">
@@ -147,56 +147,16 @@
 							{% endfor %}
 						</tbody>
 					</table>
+
+					<!-- Pagination -->
+					{% include "includes/pagination.html" %}
 				</div>
-
-				<!-- Pagination -->
-				<nav aria-label="Page navigation">
-					<ul
-						class="pagination justify-content-center align-items-center position-relative z-index-10">
-						{% if is_paginated %}
-							{% if page_obj.has_previous %}
-								<li class="page-item">
-									<a
-										href="{% querystring page=page_obj.previous_page_number %}"
-										class="page-link p-3"
-										aria-label="Previous">
-										<span
-											aria-hidden="true">&laquo;
-										</span>
-									</a>
-								</li>
-							{% endif %}
-
-							<!-- Page Info -->
-							<li class="page-item">
-								<div class="badge bg-gradient-primary rounded-3 p-3 m-2">
-									{{ page_obj.number }} of {{ paginator.num_pages }}
-								</div>
-							</li>
-
-							<!-- Next Button -->
-							{% if page_obj.has_next %}
-								<li class="page-item">
-									<a
-										href="{% querystring page=page_obj.next_page_number %}"
-										class="page-link p-3"
-										aria-label="Next">
-										<span
-											aria-hidden="true">&raquo;
-										</span>
-									</a>
-								</li>
-							{% endif %}
-						{% endif %}
-					</ul>
-				</nav>
 			</div>
 
-			{% if task_list.count < page_obj.paginator.per_page %}
+			<!-- Waves effect block -->
+			{% if not is_paginated %}
 				{% include "includes/svg_waves.html" %}
 			{% endif %}
-
-		</div>
 		</div>
 	</main>
 {% endblock content %}
