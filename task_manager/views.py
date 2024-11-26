@@ -251,7 +251,7 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
 
 class TaskDeleteView(LoginRequiredMixin, DeleteView):
 	model = Task
-	template_name = "pages/confirm_delete.html"
+	template_name = "pages/task_confirm_delete.html"
 	success_url = reverse_lazy("task_manager:task_list")
 	
 	def dispatch(self, request, *args, **kwargs):

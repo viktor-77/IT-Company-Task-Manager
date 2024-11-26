@@ -10,10 +10,7 @@
 				 alt="Background Image">
 		<div class="container text-center position-relative z-index-1">
 			<div class="card d-flex justify-content-center p-4 shadow-lg w-50 m-auto border-radius-lg">
-				<h3 class="text-gradient text-primary mb-4">Are you sure you want to delete task
-					<span class="fw-bold">{{ task }}</span>
-					?
-				</h3>
+				{% block heading %}{% endblock heading %}
 				<p class="text-muted mb-4">This action cannot be undone.</p>
 				<div class="d-flex justify-content-center align-items-center gap-3">
 					<a href="{{ previous_page }}"
