@@ -121,14 +121,9 @@
 												<span class="badge bg-gradient-success">Low</span>
 											{% endif %}
 										</p>
-										<p>
+										<p class="{% if task.deadline < today %}text-danger fw-bold{% endif %}">
 											<strong>Deadline:</strong>
-											{% if task.deadline < today %}
-												<span class="badge bg-gradient-danger">Overdue</span>
-												{{ task.deadline }}
-											{% else %}
-												{{ task.deadline }}
-											{% endif %}
+											{{ task.deadline }}
 										</p>
 									</div>
 									<div class="text-center mt-4">
@@ -201,7 +196,7 @@
 					{% endif %}
 				{% endfor %}
 			</div>
-			{% if active_tasks == total_tasks %}
+			{% if active_tasks == worker.tasks.count %}
 				<p class="text-muted text-center">No Resolved tasks assigned.</p>
 			{% endif %}
 		</div>

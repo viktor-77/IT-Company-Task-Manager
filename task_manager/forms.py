@@ -2,10 +2,9 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
-from django.core.validators import MinLengthValidator
 
-from .models import Task
-from .validators import get_min_length_validator
+from task_manager.models import Task
+from task_manager.validators import get_min_length_validator
 
 
 class TaskForm(forms.ModelForm):
@@ -108,7 +107,6 @@ class MetaBaseForm:
 				"class": "form-control",
 				"placeholder": "Enter your password",
 				"autocomplete": "new-password",
-				
 			}
 		)
 	}

@@ -22,11 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-(x6+qbryl(wyes9*(3j11#fm+o!1rdj@b9p!k75xeue#6wr*d5"
 
 # SECURITY WARNING: don"t run with debug turned on in production!
-DEBUG = not False
+DEBUG = True
 
 INTERNAL_IPS = [
-	"127.0.0.1",  # Для локального сервера
-	"::1",  # IPv6, якщо використовується
+	"127.0.0.1",
 ]
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
@@ -92,7 +91,8 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
 	{
-		"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+		"NAME": "django.contrib.auth.password_validation"
+				".UserAttributeSimilarityValidator",
 	},
 	{
 		"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",

@@ -1,4 +1,4 @@
-{% extends 'layouts/base_sections.html' %}{% load static %}{% load url_update_tag %}
+{% extends 'layouts/base_sections.html' %}{% load static %}
 
 
 {% block title %} Material Kit 2 by Creative team {% endblock title %}
@@ -129,7 +129,7 @@
 							{% if page_obj.has_previous %}
 								<li class="page-item">
 									<a
-										href="?{% url_update_tag request page=page_obj.previous_page_number %}"
+										href="{% querystring page=page_obj.previous_page_number %}"
 										class="page-link"
 										aria-label="Previous">
 										<span
@@ -150,7 +150,7 @@
 							{% if page_obj.has_next %}
 								<li class="page-item">
 									<a
-										href="?{% url_update_tag request page=page_obj.next_page_number %}"
+										href="{% querystring page=page_obj.next_page_number %}"
 										class="page-link"
 										aria-label="Next">
 										<span
