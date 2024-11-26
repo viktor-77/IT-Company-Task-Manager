@@ -100,6 +100,12 @@ class WorkerCreateView(CreateView):
 	form_class = WorkerCreateForm
 	template_name = "pages/worker_form.html"
 	
+	def dispatch(self, request, *args, **kwargs):
+		if request.user.is_authenticated:
+			return redirect("task_manager:index")
+		
+		return super().dispatch(request, *args, **kwargs)
+	
 	def get_success_url(self):
 		return reverse_lazy(
 			"task_manager:worker_detail", kwargs={"pk": self.object.pk}
@@ -116,12 +122,6 @@ class WorkerCreateView(CreateView):
 		login(self.request, worker)
 		
 		return super().form_valid(form)
-	
-	def dispatch(self, request, *args, **kwargs):
-		if request.user.is_authenticated:
-			return redirect("task_manager:index")
-		
-		return super().dispatch(request, *args, **kwargs)
 
 
 class WorkerUpdateView(LoginRequiredMixin, UpdateView):
@@ -131,7 +131,7 @@ class WorkerUpdateView(LoginRequiredMixin, UpdateView):
 	
 	def dispatch(self, request, *args, **kwargs):
 		worker = self.get_object()
-		if not (request.user.is_superuser or worker.pk == request.user.pk):
+		if not (request.user.is_superuser or request.user.pk == worker.pk):
 			raise PermissionDenied(
 				"You are not allowed to edit this user."
 			)
@@ -141,7 +141,7 @@ class WorkerUpdateView(LoginRequiredMixin, UpdateView):
 		if next_url := self.request.GET.get('next'):
 			return next_url
 		return reverse_lazy(
-			'task_manager:worker_detail', kwargs={'pk': self.request.user.pk}
+			'task_manager:worker_detail', kwargs={'pk': self.get_object().pk}
 		)
 	
 	def form_valid(self, form):
@@ -162,6 +162,13 @@ class WorkerDeleteView(LoginRequiredMixin, DeleteView):
 	model = get_user_model()
 	template_name = "pages/worker_confirm_delete.html"
 	success_url = reverse_lazy("task_manager:worker_list")
+	
+	def dispatch(self, request, *args, **kwargs):
+		if not request.user.is_superuser:
+			raise PermissionDenied(
+				"You are not allowed to delete users."
+			)
+		return super().dispatch(request, *args, **kwargs)
 	
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
@@ -242,6 +249,15 @@ class TaskDeleteView(LoginRequiredMixin, DeleteView):
 	model = Task
 	template_name = "pages/confirm_delete.html"
 	success_url = reverse_lazy("task_manager:task_list")
+	
+	def dispatch(self, request, *args, **kwargs):
+		task = self.get_object()
+		is_user_assigner = task.assignees.filter(pk=request.user.pk).exists()
+		if not (request.user.is_superuser or is_user_assigner):
+			raise PermissionDenied(
+				"You are not allowed to edit this task."
+			)
+		return super().dispatch(request, *args, **kwargs)
 	
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
