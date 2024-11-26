@@ -1,8 +1,4 @@
 {% extends 'layouts/base_sections.html' %}{% load static %}
-
-
-{% block title %} Material Kit 2 by Creative team {% endblock title %}
-
 {% block body %} class="index-page bg-gray-200" {% endblock body %}
 
 {% block content %}
@@ -13,36 +9,8 @@
 			style="background-image: url('{% static 'img/curved-images/curved.jpg' %}')">
 			<div class="container my-5">
 
-
 				<!-- Search -->
-				<div class="row text-center py-2 mt-3">
-					{#					<div class="col-6 mx-auto">	#}
-					<div class="input-group mb-5">
-						<form action=""
-									method="get"
-									class="w-100 w-lg-40 w-md-70 m-auto d-flex align-items-center">
-							{{ search_form.query }}
-							<button type="submit"
-											class="btn btn-primary m-0 ms-2 ms-lg-3"
-											data-bs-toggle="tooltip"
-											data-bs-placement="top"
-											title="Search">
-								<i class="fa-solid fa-magnifying-glass"></i>
-							</button>
-							{% if request.GET.query %}
-								<a href="{% querystring query='' page=None %}"
-									 data-bs-toggle="tooltip"
-									 data-bs-placement="top"
-									 title="Reset"
-									 class="btn btn-danger m-0 ms-2 ms-lg-3">
-									<i class="fa-solid fa-xmark"></i>
-								</a>
-							{% endif %}
-						</form>
-					</div>
-					{#					</div>#}
-				</div>
-
+				{% include "includes/search.html" %}
 
 				<!-- Table -->
 				<div class="table-responsive shadow">
@@ -129,6 +97,7 @@
 			{% if not is_paginated %}
 				{% include "includes/svg_waves.html" %}
 			{% endif %}
+		
 		</div>
 	</main>
 {% endblock content %}
