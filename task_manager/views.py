@@ -203,6 +203,8 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
 	
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
+		
+		context["today"] = date.today()
 		context['is_coworker'] = (
 			self.object.assignees.filter(pk=self.request.user.pk).exists()
 		)

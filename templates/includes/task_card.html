@@ -27,9 +27,9 @@
 						<span class="badge bg-gradient-success">Low</span>
 					{% endif %}
 				</p>
-				<p class="{% if not task.is_completed and task.deadline < today %}text-danger fw-bold{% endif %}">
+				<p class="{% if not task.is_completed and task.deadline < today %}text-danger text-gradient fw-bolder{% endif %}">
 					<strong>Deadline:</strong>
-					{{ task.deadline }}
+					<i>{{ task.deadline }}</i>
 				</p>
 			</div>
 			<div class="text-center mt-4">

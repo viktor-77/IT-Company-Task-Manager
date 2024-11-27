@@ -57,7 +57,7 @@
 									<strong>Created at:</strong>
 									<i>{{ task.created_at }}</i>
 								</p>
-								<p>
+								<p class="{% if not task.is_completed and task.deadline < today %}text-danger text-gradient fw-bolder{% endif %}">
 									<strong>Deadline:</strong>
 									<i>{{ task.deadline }}</i>
 								</p>
