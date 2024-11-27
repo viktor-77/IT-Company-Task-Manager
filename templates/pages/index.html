@@ -17,7 +17,6 @@
 					</div>
 				</div>
 			</div>
-
 			{% include "includes/svg_waves.html" %}
 		</div>
 	</header>
@@ -25,6 +24,7 @@
 	<section class="py-5 bg-gradient-light">
 		<div class="container">
 			<div class="row text-center">
+
 				<!-- Total Tasks -->
 				<div class="col-lg-4 col-md-6 mb-4">
 					<div
@@ -85,7 +85,6 @@
 		</div>
 	</section>
 
-
 	<section class="py-5">
 		<div class="container">
 			<div class="row text-center">
@@ -134,7 +133,8 @@
 	<section class="py-5 bg-light">
 		<div class="container">
 			<div class="row text-center">
-				<!-- Block 1: Workers -->
+
+				<!-- Workers -->
 				<div class="col-md-6 mb-4">
 					<div class="card border-0 shadow-lg h-100">
 						<div class="card-body d-flex flex-column justify-content-center align-items-center">
@@ -154,7 +154,8 @@
 						</div>
 					</div>
 				</div>
-				<!-- Block 2: Tasks -->
+
+				<!-- Tasks -->
 				<div class="col-md-6 mb-4">
 					<div class="card border-0 shadow-lg h-100">
 						<div class="card-body d-flex flex-column justify-content-center align-items-center">
@@ -179,9 +180,7 @@
 {% endblock content %}
 
 {% block javascripts %}
-
 	<script type="text/javascript">
-
       if (document.getElementById('state1')) {
           const countUp = new CountUp('state1', document.getElementById("state1").getAttribute("countTo"));
           if (!countUp.error) {
@@ -208,5 +207,4 @@
           ;
       }
 	</script>
-
 {% endblock javascripts %}
