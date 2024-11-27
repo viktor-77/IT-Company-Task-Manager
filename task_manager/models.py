@@ -55,6 +55,9 @@ class Task(models.Model):
 	task_type = models.ForeignKey(TaskType, on_delete=models.CASCADE)
 	assignees = models.ManyToManyField(Worker, related_name="tasks")
 	
+	class Meta:
+		ordering = ['-priority', 'deadline']
+	
 	def clean(self):
 		if self.pk:
 			if Task.objects.get(pk=self.pk).deadline == self.deadline:
@@ -71,6 +74,3 @@ class Task(models.Model):
 	
 	def __str__(self) -> str:
 		return self.name
-	
-	class Meta:
-		ordering = ['-priority', 'deadline']
