@@ -54,8 +54,12 @@ class Task(models.Model):
 	priority = models.IntegerField(choices=PRIORITY_CHOICES)
 	task_type = models.ForeignKey(TaskType, on_delete=models.CASCADE)
 	assignees = models.ManyToManyField(Worker, related_name="tasks")
-
+	
 	def clean(self):
+		if self.pk:
+			if Task.objects.get(pk=self.pk).deadline == self.deadline:
+				return
+		
 		if self.deadline and self.deadline < now().date():
 			raise ValidationError(
 				{"deadline": "The deadline cannot be in the past."}
