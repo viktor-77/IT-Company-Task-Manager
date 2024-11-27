@@ -23,8 +23,9 @@
 									{% csrf_token %}
 
 									<div class="mb-3">
-										<label class="form-label text-primary"
-													 for="id_name">Name</label>
+										<div class="text-primary mb-2">
+											{{ form.name.label }}
+										</div>
 										{{ form.name }}
 										<div class="text-danger">
 											{{ form.name.errors }}
@@ -32,8 +33,9 @@
 									</div>
 
 									<div class="mb-3">
-										<label class="form-label text-primary"
-													 for="id_description">Description</label>
+										<div class="text-primary mb-2">
+											{{ form.description.label }}
+										</div>
 										{{ form.description }}
 										<div class="text-danger">
 											{{ form.description.errors }}
@@ -41,8 +43,9 @@
 									</div>
 
 									<div class="mb-3">
-										<label class="form-label text-primary"
-													 for="id_deadline">Deadline</label>
+										<div class="text-primary mb-2">
+											{{ form.deadline.label }}
+										</div>
 										{{ form.deadline }}
 										<div class="text-danger">
 											{{ form.deadline.errors }}
@@ -52,10 +55,9 @@
 									{% if task %}
 										<div class="mt-4">
 											<div class="form-check form-switch ps-0">
-												<label for="id_completed"
-															 class="form-check-label ms-2 text-primary">
-													Resoled
-												</label>
+												<span class="text-primary mb-2 ms-3">
+													{{ form.is_completed.label }}
+												</span>
 												<input class="form-check-input ms-auto mt-1"
 															 type="checkbox"
 															 id="id_completed"
@@ -114,26 +116,22 @@
 												</div>
 											</div>
 										</div>
-
-
 									</div>
 
 									<div class="mb-3 mt-4">
-										<label class="form-label text-primary"
-													 for="id_assignees">Assignees</label>
+										<div class="text-primary mb-2">
+											{{ form.assignees.label }}
+										</div>
 										{{ form.assignees }}
 										<div class="text-danger">
 											{{ form.assignees.errors }}
 										</div>
 									</div>
 
-
 									<button type="submit"
 													class="btn btn-primary">Submit
 									</button>
 								</form>
-
-
 							</div>
 						</div>
 					</div>
