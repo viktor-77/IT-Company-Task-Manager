@@ -2,7 +2,10 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from task_manager.models import (
-	TaskType, Position, Worker, Task,
+	TaskType,
+	Position,
+	Worker,
+	Task,
 )
 
 
@@ -37,16 +40,23 @@ class WorkerAdmin(UserAdmin):
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
 	list_display = (
-		"name", "created_at", "deadline",
-		"is_completed", "priority", "task_type"
+		"name",
+		"created_at",
+		"deadline",
+		"is_completed",
+		"priority",
+		"task_type",
 	)
 	list_editable = ["priority", "task_type"]
 	search_fields = ("name",)
 	list_filter = (
-		"deadline", "created_at", "is_completed",
-		"priority", "task_type", "assignees"
+		"created_at",
+		"deadline",
+		"is_completed",
+		"priority",
+		"task_type",
+		"assignees"
 	)
-	# readonly_fields = ('created_at',)
 	filter_horizontal = ("assignees",)
 
 
