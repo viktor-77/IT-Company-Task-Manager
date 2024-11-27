@@ -44,12 +44,12 @@
 								</p>
 								<p>
 									<strong>Active Tasks:</strong>
-									{% if active_tasks > 0 %}
+									{% if active_tasks %}
 										<span
 											class="fw-bold"
 											id="state2"
-											countTo="{{ active_tasks }}">
-											{{ active_tasks }}
+											countTo="{{ active_tasks.count }}">
+											{{ active_tasks.count }}
 										</span>
 										</span>
 									{% else %}
@@ -74,67 +74,17 @@
 					</div>
 				</div>
 			</div>
-
 			{% include "includes/svg_waves.html" %}
-
-
 		</div>
 	</header>
-
 	<div class="container my-5">
 
 		<!-- Active Tasks Section -->
 		<div class="mt-5">
 			<h4 class="text-uppercase text-primary m-5">Active Tasks</h4>
 			<div class="row g-5">
-				{% for task in tasks %}
-					{% if not task.is_completed %}
-						<div class="col-md-6">
-							<div class="card">
-								<div class="card-header bg-gradient-faded-dark text-white d-flex align-items-center justify-content-between border border-1">
-									<h5 class="card-title text-uppercase mb-0">{{ task }}</h5>
-									{% if user.is_superuser or user.pk|stringformat:"s" in request.path %}
-										<a href="{% url "task_manager:task_update" task.pk %}?next={{ request.path }}">
-											<i
-												class="fas fa-edit me-2 border border-1 p-3 card"
-												aria-hidden="true"></i>
-										</a>
-									{% endif %}
-								</div>
-								<div class="card-body">
-									<div class="container border-start border-primary border-2">
-										<p>
-											<strong>Type:</strong>
-											{{ task.task_type }}</p>
-										<p>
-											<strong>Priority:</strong>
-											{% if task.priority == 4 %}
-												<span class="badge bg-gradient-danger">Urgent</span>
-											{% elif task.priority == 3 %}
-												<span class="badge bg-gradient-warning">High</span>
-											{% elif task.priority == 2 %}
-												<span class="badge bg-gradient-info">Medium</span>
-											{% else %}
-												<span class="badge bg-gradient-success">Low</span>
-											{% endif %}
-										</p>
-										<p class="{% if task.deadline < today %}text-danger fw-bold{% endif %}">
-											<strong>Deadline:</strong>
-											{{ task.deadline }}
-										</p>
-									</div>
-									<div class="text-center mt-4">
-										<a
-											href="{% url "task_manager:task_detail" task.pk %}"
-											class="btn btn-outline-primary btn-sm">
-											View Task Details
-										</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					{% endif %}
-
+				{% for task in active_tasks %}
+					{% include "includes/task_card.html" %}
 				{% empty %}
 					<p class="text-muted text-center my-2">No active tasks assigned.</p>
 				{% endfor %}
@@ -145,60 +95,13 @@
 		<div class="mt-5">
 			<h4 class="text-uppercase text-primary m-5"> Resolved Tasks</h4>
 			<div class="row g-5">
-				{% for task in tasks %}
-					{% if task.is_completed %}
-						<div class="col-md-6">
-							<div class="card shadow-sm border-0">
-								<div class="card-header bg-gradient-success text-white d-flex align-items-center justify-content-between border border-1 ">
-									<h5 class="card-title text-uppercase mb-0">{{ task }}</h5>
-									{% if user.is_superuser or user.pk|stringformat:"s" in request.path %}
-										<a href="{% url "task_manager:task_update" task.pk %}?next={{ request.path }}">
-											<i
-												class="fas fa-edit me-2 border border-1 p-3 card"
-												aria-hidden="true"></i>
-										</a>
-									{% endif %}
-								</div>
-								<div class="card-body">
-									<div class="container border-start border-primary border-2">
-										<p>
-											<strong>Type:</strong>
-											{{ task.task_type }}</p>
-										<p>
-											<strong>Priority:</strong>
-											{% if task.priority == 4 %}
-												<span class="badge bg-gradient-danger">Urgent</span>
-											{% elif task.priority == 3 %}
-												<span class="badge bg-gradient-warning">High</span>
-											{% elif task.priority == 2 %}
-												<span class="badge bg-gradient-info">Medium</span>
-											{% else %}
-												<span class="badge bg-gradient-success">Low</span>
-											{% endif %}
-										</p>
-										<p>
-											<strong>Deadline:</strong>
-											{{ task.deadline }}</p>
-									</div>
-									<div class="text-center mt-4">
-										<a
-											href="{% url "task_manager:task_detail" task.pk %}"
-											class="btn btn-outline-primary btn-sm">
-											View Task Details
-										</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					{% endif %}
-
+				{% for task in resolved_tasks %}
+					{% include "includes/task_card.html" %}
 				{% empty %}
 					<p class="text-muted text-center my-2">No Resolved tasks assigned.</p>
 				{% endfor %}
 			</div>
 		</div>
-
-
 	</div>
 {% endblock content %}
 

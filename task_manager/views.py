@@ -86,11 +86,9 @@ class WorkerDetailView(LoginRequiredMixin, DetailView):
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		
-		context["tasks"] = self.object.tasks.all()
+		context["active_tasks"] = self.object.tasks.filter(is_completed=False)
+		context["resolved_tasks"] = self.object.tasks.filter(is_completed=True)
 		context["today"] = date.today()
-		context["active_tasks"] = self.object.tasks.filter(
-			is_completed=False
-		).count()
 		
 		return context
 
