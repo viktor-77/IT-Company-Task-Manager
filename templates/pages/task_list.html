@@ -8,7 +8,7 @@
 			class="page-header min-vh-100 relative"
 			style="background-image: url('{% static 'img/curved-images/curved.jpg' %}')">
 			<div class="container my-3">
-			
+
 				<!-- Search -->
 				{% include "includes/search.html" %}
 
@@ -117,7 +117,7 @@
 			</div>
 
 			<!-- Waves effect block -->
-			{% if not is_paginated %}
+			{% if not is_paginated or page_obj.object_list.count < paginator.per_page %}
 				{% include "includes/svg_waves.html" %}
 			{% endif %}
 

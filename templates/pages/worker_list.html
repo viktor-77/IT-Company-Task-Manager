@@ -93,7 +93,7 @@
 			</div>
 
 			<!-- Waves effect block -->
-			{% if not is_paginated %}
+			{% if not is_paginated or page_obj.object_list.count < paginator.per_page %}
 				{% include "includes/svg_waves.html" %}
 			{% endif %}
 
