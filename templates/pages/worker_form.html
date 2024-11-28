@@ -23,83 +23,37 @@
 											method="post">
 									{% csrf_token %}
 
-									<div class="mb-3">
-										<div class="text-primary mb-2">
-											{{ form.username.label }}
-										</div>
-										{{ form.username }}
-									</div>
-									<div class="text-danger">
-										{{ form.username.errors }}
-									</div>
-
-									<div class="mb-3">
-										<div class="text-primary mb-2">
-											{{ form.first_name.label }}
-										</div>
-										{{ form.first_name }}
-									</div>
-									<div class="text-danger">
-										{{ form.first_name.errors }}
-									</div>
-
-									<div class="mb-3">
-										<div class="text-primary mb-2">
-											{{ form.last_name.label }}
-										</div>
-										{{ form.last_name }}
-									</div>
-									<div class="text-danger">
-										{{ form.last_name.errors }}
-									</div>
-
-									<div class="mb-3">
-										<div class="text-primary mb-2">
-											{{ form.email.label }}
-										</div>
-										{{ form.email }}
-									</div>
-									<div class="text-danger">
-										{{ form.email.errors }}
-									</div>
-
-									{% if not user.is_authenticated %}
+									{% for field in form %}
 										<div class="mb-3">
 											<div class="text-primary mb-2">
-												{{ form.position.label }}
+												{{ field.label }}
 											</div>
-											{% for value, label in form.fields.position.choices %}
-												<div class="form-check">
-													<input
-														class="form-check-input"
-														type="radio"
-														id="id_position_{{ forloop.counter }}"
-														name="position"
-														value={{ value }}
-															{% if form.data.position|stringformat:"s" == value|stringformat:"s" or form.initial.position|stringformat:"s" == value|stringformat:"s" %}
-																checked
-															{% endif %}>
-													<label class="form-check-label"
-																 for="id_position_{{ forloop.counter }}">
-														{{ label }}
-													</label>
-												</div>
-											{% endfor %}
-										</div>
-										<div class="text-danger">
-											{{ form.position.errors }}
-										</div>
-									{% endif %}
 
-									<div class="mb-3">
-										<div class="text-primary mb-2">
-											{{ form.password.label }}
+											{% if field.name == "position" and not user.is_authenticated %}
+												{% for value, label in field.field.choices %}
+													<div class="form-check">
+														<input
+															class="form-check-input"
+															type="radio"
+															id="id_{{ field.name }}_{{ value }}"
+															name="{{ field.name }}"
+															value="{{ value }}"
+															{% if form.data.position == value|stringformat:"s" %}checked{% endif %}>
+														<label class="form-check-label"
+																	 for="id_{{ field.name }}_{{ value }}">
+															{{ label }}
+														</label>
+													</div>
+												{% endfor %}
+											{% else %}
+												{{ field }}
+											{% endif %}
+
+											<div class="text-danger mt-2">
+												{{ field.errors }}
+											</div>
 										</div>
-										{{ form.password }}
-									</div>
-									<div class="text-danger">
-										{{ form.password.errors }}
-									</div>
+									{% endfor %}
 
 									<button type="submit"
 													class="btn btn-primary">
