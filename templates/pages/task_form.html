@@ -22,35 +22,19 @@
 								<form method="post">
 									{% csrf_token %}
 
-									<div class="mb-4">
-										<div class="text-primary mb-2">
-											{{ form.name.label }}
-										</div>
-										{{ form.name }}
-										<div class="text-danger">
-											{{ form.name.errors }}
-										</div>
-									</div>
-
-									<div class="mb-4">
-										<div class="text-primary mb-2">
-											{{ form.description.label }}
-										</div>
-										{{ form.description }}
-										<div class="text-danger">
-											{{ form.description.errors }}
-										</div>
-									</div>
-
-									<div class="mb-4">
-										<div class="text-primary mb-2">
-											{{ form.deadline.label }}
-										</div>
-										{{ form.deadline }}
-										<div class="text-danger">
-											{{ form.deadline.errors }}
-										</div>
-									</div>
+									{% for field in form %}
+										{% if field.widget_type != "radioselect" and field.widget_type != "checkbox" %}
+											<div class="mb-4">
+												<div class="text-primary mb-2">
+													{{ field.label }}
+												</div>
+												{{ field }}
+												<div class="text-danger">
+													{{ field.errors }}
+												</div>
+											</div>
+										{% endif %}
+									{% endfor %}
 
 									{% if task %}
 										<div class="form-check form-switch ps-0 d-flex gap-6 align-items-center">
@@ -71,16 +55,6 @@
 											<div class="col-10 text-start m-lg-auto">
 												{% include "includes/radio_field.html" with field=form.task_type initial=form.initial.task_type field_validated_value=form.data.task_type %}
 											</div>
-										</div>
-									</div>
-
-									<div class="mb-4">
-										<div class="text-primary mb-2">
-											{{ form.assignees.label }}
-										</div>
-										{{ form.assignees }}
-										<div class="text-danger">
-											{{ form.assignees.errors }}
 										</div>
 									</div>
 

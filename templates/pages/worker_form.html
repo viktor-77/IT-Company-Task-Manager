@@ -24,7 +24,7 @@
 									{% csrf_token %}
 
 									{% for field in form %}
-										{% if not field.name == "position" %}
+										{% if field.name != "position" %}
 											<div class="mb-4">
 												<div class="text-primary mb-2">
 													{{ field.label }}
