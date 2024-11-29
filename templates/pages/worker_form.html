@@ -24,35 +24,21 @@
 									{% csrf_token %}
 
 									{% for field in form %}
-										<div class="mb-3">
-											<div class="text-primary mb-2">
-												{{ field.label }}
-											</div>
-
-											{% if field.name == "position" and not user.is_authenticated %}
-												{% for value, label in field.field.choices %}
-													<div class="form-check">
-														<input
-															class="form-check-input"
-															type="radio"
-															id="id_{{ field.name }}_{{ value }}"
-															name="{{ field.name }}"
-															value="{{ value }}"
-															{% if form.data.position == value|stringformat:"s" %}checked{% endif %}>
-														<label class="form-check-label"
-																	 for="id_{{ field.name }}_{{ value }}">
-															{{ label }}
-														</label>
-													</div>
-												{% endfor %}
-											{% else %}
+										{% if not field.name == "position" %}
+											<div class="mb-4">
+												<div class="text-primary mb-2">
+													{{ field.label }}
+												</div>
 												{{ field }}
-											{% endif %}
-
-											<div class="text-danger mt-2">
-												{{ field.errors }}
+												<div class="text-danger mt-2">
+													{{ field.errors }}
+												</div>
 											</div>
-										</div>
+										{% else %}
+											<div class="mb-4">
+												{% include "includes/radio_field.html" with field=form.position field_validated_value=form.data.position %}
+											</div>
+										{% endif %}
 									{% endfor %}
 
 									<button type="submit"

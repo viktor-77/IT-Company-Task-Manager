@@ -10,7 +10,9 @@ from task_manager.validators import get_min_length_validator
 class TaskForm(forms.ModelForm):
 	priority = forms.ChoiceField(
 		choices=Task.PRIORITY_CHOICES,
-		widget=forms.RadioSelect,
+		widget=forms.RadioSelect(
+			attrs={"class": "form-check-input"}
+		)
 	)
 	
 	class Meta:
@@ -22,7 +24,7 @@ class TaskForm(forms.ModelForm):
 			"is_completed",
 			"priority",
 			"task_type",
-			"assignees"
+			"assignees",
 		]
 		widgets = {
 			"name": forms.TextInput(
@@ -39,6 +41,9 @@ class TaskForm(forms.ModelForm):
 			),
 			"deadline": forms.DateInput(
 				attrs={"class": "form-control", "type": "date"}
+			),
+			"is_completed": forms.CheckboxInput(
+				attrs={"class": "form-check-input"}
 			),
 			"task_type": forms.RadioSelect(),
 			"assignees": forms.SelectMultiple(attrs={"class": "form-select"})

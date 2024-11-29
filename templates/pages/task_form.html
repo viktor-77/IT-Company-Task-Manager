@@ -22,7 +22,7 @@
 								<form method="post">
 									{% csrf_token %}
 
-									<div class="mb-3">
+									<div class="mb-4">
 										<div class="text-primary mb-2">
 											{{ form.name.label }}
 										</div>
@@ -32,7 +32,7 @@
 										</div>
 									</div>
 
-									<div class="mb-3">
+									<div class="mb-4">
 										<div class="text-primary mb-2">
 											{{ form.description.label }}
 										</div>
@@ -42,7 +42,7 @@
 										</div>
 									</div>
 
-									<div class="mb-3">
+									<div class="mb-4">
 										<div class="text-primary mb-2">
 											{{ form.deadline.label }}
 										</div>
@@ -53,72 +53,28 @@
 									</div>
 
 									{% if task %}
-										<div class="mt-4">
-											<div class="form-check form-switch ps-0">
-												<span class="text-primary mb-2 ms-3">
-													{{ form.is_completed.label }}
-												</span>
-												<input class="form-check-input ms-auto mt-1"
-															 type="checkbox"
-															 id="id_completed"
-															 name="is_completed"
-															 {% if form.initial.is_completed %}checked{% endif %}>
+										<div class="form-check form-switch ps-0 d-flex gap-6 align-items-center">
+											<div class="text-primary my-2">
+												{{ form.is_completed.label }}
 											</div>
+											{{ form.is_completed }}
 										</div>
 									{% endif %}
 
-									<div class="d-flex justify-content-between">
-										<div class="row text-center py-2 mt-3 w-100">
+									<div class="d-flex justify-content-between my-3">
+										<div class="row text-center py-2 w-100">
 											<div class="col-10 text-start">
-												<p class="form-label text-primary">Select Priority</p>
-												{% for value, label in form.fields.priority.choices %}
-													<div class="form-check">
-														<input
-															class="form-check-input"
-															type="radio"
-															id="id_priority_{{ forloop.counter }}"
-															name="priority"
-															value={{ value }}
-																{% if form.data.priority|stringformat:"s" == value|stringformat:"s" or form.initial.priority|stringformat:"s" == value|stringformat:"s" %}checked{% endif %}>
-														<label class="form-check-label"
-																	 for="id_priority_{{ forloop.counter }}">
-															{{ label }}
-														</label>
-													</div>
-												{% endfor %}
-												<div class="text-danger">
-													{{ form.priority.errors }}
-												</div>
+												{% include "includes/radio_field.html" with field=form.priority initial=form.initial.priority field_validated_value=form.data.priority %}
 											</div>
 										</div>
-
-										<div class="row text-center py-2 mt-3 w-100">
+										<div class="row text-center py-2 w-100">
 											<div class="col-10 text-start m-lg-auto">
-												<p class="form-label text-primary">Task Type</p>
-												{% for value, label in form.fields.task_type.choices %}
-													<div class="form-check">
-														<input
-															class="form-check-input"
-															type="radio"
-															id="id_task_type_{{ forloop.counter }}"
-															name="task_type"
-															value="{{ value }}"
-															{% if form.data.task_type|stringformat:"s" == value|stringformat:"s" or form.initial.task_type|stringformat:"s" == value|stringformat:"s" %}checked{% endif %}
-														>
-														<label class="form-check-label"
-																	 for="id_task_type_{{ forloop.counter }}">
-															{{ label }}
-														</label>
-													</div>
-												{% endfor %}
-												<div class="text-danger">
-													{{ form.task_type.errors }}
-												</div>
+												{% include "includes/radio_field.html" with field=form.task_type initial=form.initial.task_type field_validated_value=form.data.task_type %}
 											</div>
 										</div>
 									</div>
 
-									<div class="mb-3 mt-4">
+									<div class="mb-4">
 										<div class="text-primary mb-2">
 											{{ form.assignees.label }}
 										</div>
