@@ -86,7 +86,7 @@
 				{% for task in active_tasks %}
 					{% include "includes/task_card.html" %}
 				{% empty %}
-					<p class="text-muted text-center my-2">No active tasks assigned.</p>
+					<p class="text-muted text-center my-2">No active tasks.</p>
 				{% endfor %}
 			</div>
 		</div>
@@ -98,7 +98,7 @@
 				{% for task in resolved_tasks %}
 					{% include "includes/task_card.html" %}
 				{% empty %}
-					<p class="text-muted text-center my-2">No Resolved tasks assigned.</p>
+					<p class="text-muted text-center my-2">No Resolved tasks.</p>
 				{% endfor %}
 			</div>
 		</div>
