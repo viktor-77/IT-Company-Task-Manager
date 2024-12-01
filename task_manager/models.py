@@ -25,12 +25,14 @@ class Position(models.Model):
 
 
 class Worker(AbstractUser):
-	position = models.ForeignKey(Position, on_delete=models.CASCADE)
-	email = models.EmailField(unique=True, blank=False, null=False)
-	first_name = models.CharField(max_length=100, blank=False, null=False)
-	last_name = models.CharField(max_length=100, blank=False, null=False)
+	position = models.ForeignKey(
+		Position,
+		on_delete=models.SET_NULL,
+		null=True
+	)
 	
 	class Meta:
+		ordering = ['username']
 		verbose_name = 'Worker'
 		verbose_name_plural = 'Workers'
 	
