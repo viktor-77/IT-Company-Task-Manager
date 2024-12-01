@@ -1,4 +1,3 @@
-from django.contrib import admin
 from django.urls import path
 
 from task_manager.views import (
@@ -28,7 +27,8 @@ urlpatterns = [
 		name="worker_update"
 	),
 	path(
-		"workers/delete/<int:pk>/", WorkerDeleteView.as_view(),
+		"workers/delete/<int:pk>/",
+		WorkerDeleteView.as_view(),
 		name="worker_delete"
 	),
 	path("tasks/", TaskListView.as_view(), name="task_list"),
