@@ -55,18 +55,22 @@ class Task(models.Model):
 	deadline = models.DateField()
 	is_completed = models.BooleanField(default=False)
 	priority = models.IntegerField(choices=PRIORITY_CHOICES)
-	task_type = models.ForeignKey(TaskType, on_delete=models.CASCADE)
+	task_type = models.ForeignKey(
+		TaskType,
+		on_delete=models.SET_NULL,
+		null=True,
+		related_name="tasks"
+	)
 	assignees = models.ManyToManyField(Worker, related_name="tasks")
 	
 	class Meta:
 		ordering = ['-priority', 'deadline']
 	
 	def clean(self):
-		if self.pk:
-			if Task.objects.get(pk=self.pk).deadline == self.deadline:
-				return
+		if self.pk and Task.objects.get(pk=self.pk).deadline == self.deadline:
+			return
 		
-		if self.deadline and self.deadline < now().date():
+		if self.deadline < now().date():
 			raise ValidationError(
 				{"deadline": "The deadline cannot be in the past."}
 			)
