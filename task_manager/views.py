@@ -1,7 +1,7 @@
 from datetime import date
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView as BaseLoginView
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
@@ -46,9 +46,7 @@ class SearchMixin:
 		return context
 
 
-class RedirectAuthenticatedUserLoginView(LoginView):
-	"""Redirects authenticated users to the index page."""
-	
+class LoginView(BaseLoginView):
 	def dispatch(self, request, *args, **kwargs):
 		if request.user.is_authenticated:
 			return redirect("task_manager:index")

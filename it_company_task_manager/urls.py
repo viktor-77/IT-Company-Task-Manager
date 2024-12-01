@@ -19,15 +19,13 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
 
-from task_manager.views import RedirectAuthenticatedUserLoginView
+from task_manager.views import LoginView
 
 urlpatterns = [
 	path("admin/", admin.site.urls),
 	path("", include("task_manager.urls", namespace="task_manager")),
 	path(
-		"accounts/login/",
-		RedirectAuthenticatedUserLoginView.as_view(),
-		name="login"
+		"accounts/login/", LoginView.as_view(), name="login"
 	),
 	path("accounts/", include("django.contrib.auth.urls")),
 ]

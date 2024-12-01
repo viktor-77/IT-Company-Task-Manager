@@ -4,7 +4,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
 from task_manager.models import Task
-from task_manager.validators import get_min_length_validator
+from task_manager.validators import field_min_length_validator
 
 
 class TaskForm(forms.ModelForm):
@@ -59,7 +59,7 @@ class WorkerBaseForm(forms.ModelForm):
 				"autocomplete": "new-username",
 			}
 		),
-		validators=[get_min_length_validator()]
+		validators=[field_min_length_validator()]
 	)
 	first_name = forms.CharField(
 		widget=forms.TextInput(
@@ -68,7 +68,7 @@ class WorkerBaseForm(forms.ModelForm):
 				"placeholder": "Enter your first name",
 			}
 		),
-		validators=[get_min_length_validator()]
+		validators=[field_min_length_validator()]
 	)
 	last_name = forms.CharField(
 		widget=forms.TextInput(
@@ -77,7 +77,7 @@ class WorkerBaseForm(forms.ModelForm):
 				"placeholder": "Enter your last name",
 			}
 		),
-		validators=[get_min_length_validator()]
+		validators=[field_min_length_validator()]
 	)
 	
 	def clean_password(self):
