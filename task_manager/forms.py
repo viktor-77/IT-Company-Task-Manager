@@ -79,15 +79,16 @@ class WorkerBaseForm(forms.ModelForm):
 	)
 	
 	def clean_password(self):
-		if password := self.cleaned_data.get('password'):
+		if password := self.cleaned_data.get("password"):
 			try:
 				validate_password(password, self.instance)
 			except ValidationError as e:
-				self.add_error('password', e)
+				self.add_error("password", e)
+		
 		return password
 
 
-class MetaBaseForm:
+class WorkerBaseMeta:
 	model = get_user_model()
 	fields = (
 		"username",
@@ -116,17 +117,17 @@ class MetaBaseForm:
 
 
 class WorkerCreateForm(WorkerBaseForm):
-	class Meta(MetaBaseForm):
+	class Meta(WorkerBaseMeta):
 		pass
 
 
 class WorkerUpdateForm(WorkerBaseForm):
 	password = forms.CharField(
 		required=False,
-		widget=MetaBaseForm.widgets['password'],
+		widget=WorkerBaseMeta.widgets["password"],
 	)
 	
-	class Meta(MetaBaseForm):
+	class Meta(WorkerBaseMeta):
 		fields = (
 			"username",
 			"first_name",
