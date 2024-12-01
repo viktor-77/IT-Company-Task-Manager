@@ -10,9 +10,7 @@ from task_manager.validators import field_min_length_validator
 class TaskForm(forms.ModelForm):
 	priority = forms.ChoiceField(
 		choices=Task.PRIORITY_CHOICES,
-		widget=forms.RadioSelect(
-			attrs={"class": "form-check-input"}
-		)
+		widget=forms.RadioSelect
 	)
 	
 	class Meta:
@@ -35,7 +33,7 @@ class TaskForm(forms.ModelForm):
 			),
 			"description": forms.Textarea(
 				attrs={
-					"class": "form-control", "rows": 5,
+					"class": "form-control",
 					"placeholder": "Enter task description"
 				}
 			),
