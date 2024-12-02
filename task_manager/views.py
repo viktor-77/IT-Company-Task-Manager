@@ -4,7 +4,7 @@ from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
@@ -26,11 +26,18 @@ from task_manager.models import Worker, Task
 
 
 def index(request: HttpRequest) -> HttpResponse:
+	task_counts = Task.objects.aggregate(
+		total_tasks=Count("id"),
+		active_tasks=Count("id", filter=Q(is_completed=False))
+	)
+	
 	return render(
-		request, 'pages/index.html', {
-			'total_tasks': Task.objects.count(),
-			'active_tasks': Task.objects.filter(is_completed=False).count(),
-			'total_users': get_user_model().objects.count(),
+		request,
+		"pages/index.html",
+		{
+			"total_tasks": task_counts["total_tasks"],
+			"active_tasks": task_counts["active_tasks"],
+			"total_users": get_user_model().objects.count(),
 		}
 	)
 
@@ -133,11 +140,11 @@ class WorkerUpdateView(LoginRequiredMixin, UpdateView):
 		return super().dispatch(request, *args, **kwargs)
 	
 	def get_success_url(self):
-		if next_url := self.request.GET.get('next'):
+		if next_url := self.request.GET.get("next"):
 			return next_url
 		
 		return reverse_lazy(
-			'task_manager:worker_detail', kwargs={'pk': self.get_object().pk}
+			"task_manager:worker_detail", kwargs={"pk": self.get_object().pk}
 		)
 	
 	def form_valid(self, form):
@@ -204,7 +211,7 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
 		context = super().get_context_data(**kwargs)
 		
 		context["today"] = date.today()
-		context['is_coworker'] = (
+		context["is_coworker"] = (
 			self.object.assignees.filter(pk=self.request.user.pk).exists()
 		)
 		
@@ -239,12 +246,12 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
 		return super().dispatch(request, *args, **kwargs)
 	
 	def get_success_url(self):
-		next_url = self.request.GET.get('next')
+		next_url = self.request.GET.get("next")
 		if next_url:
 			return next_url
 		
 		return reverse_lazy(
-			'task_manager:worker_detail', kwargs={'pk': self.request.user.pk}
+			"task_manager:worker_detail", kwargs={"pk": self.request.user.pk}
 		)
 
 
@@ -266,6 +273,6 @@ class TaskDeleteView(LoginRequiredMixin, DeleteView):
 	
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		context['previous_page'] = self.request.META.get('HTTP_REFERER', '/')
+		context["previous_page"] = self.request.META.get("HTTP_REFERER", "/")
 		
 		return context
