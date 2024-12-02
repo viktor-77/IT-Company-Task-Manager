@@ -71,16 +71,10 @@
 										<i>{{ task.deadline }}</i>
 									</td>
 									<td>
-										{% if task.is_completed %}
-											<span class="text-gradient text-success fw-bold">Resolved
-												<i class="fas fa-check-circle"></i></span>
-										{% else %}
-											<span class="text-info  fw-bold">In
-												progress <i class="fas fa-spinner"></i>
-											</span>
-										{% endif %}</td>
+										{% include "includes/task_status_indicator.html" %}
+									</td>
 									<td>
-										{% include "includes/priority_badge.html" %}
+										{% include "includes/task_priority_indicator.html" %}
 									</td>
 									<td>{{ task.task_type }}</td>
 									{% if request.user.position == "Manager" or user.is_superuser %}

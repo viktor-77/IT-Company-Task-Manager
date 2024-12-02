@@ -65,18 +65,11 @@
 							<div class="col-md-6 border-start border-primary border-2">
 								<p class="fw-bold">
 									<strong>Task status:</strong>
-									{% if task.is_completed %}
-										<span class="text-gradient text-success fw-bold">Resolved
-											<i class="fas fa-check-circle"></i></span>
-									{% else %}
-										<span class="text-info  fw-bold">In
-											progress <i class="fas fa-spinner"></i>
-										</span>
-									{% endif %}
+									{% include "includes/task_status_indicator.html" %}
 								</p>
 								<p>
 									<strong>Priority:</strong>
-									{% include "includes/priority_badge.html" %}
+									{% include "includes/task_priority_indicator.html" %}
 								</p>
 							</div>
 						</div>
