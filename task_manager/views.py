@@ -72,7 +72,7 @@ class PreviousPageMixin:
 
 
 class NextPageMixin:
-	def get_success_url(self):
+	def get_success_url(self) -> str:
 		if next_page := self.request.GET.get("next"):
 			if is_safe_url(
 				url=next_page, allowed_hosts=settings.ALLOWED_HOSTS
