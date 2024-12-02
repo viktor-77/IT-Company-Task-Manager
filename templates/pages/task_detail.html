@@ -54,11 +54,11 @@
 						<div class="row  ms-3 ms-lg-5">
 							<div class="col-md-6 border-start border-primary border-2">
 								<p>
-									<strong>Created at:</strong>
+									<strong>Created at: </strong>
 									<i>{{ task.created_at }}</i>
 								</p>
 								<p class="{% if not task.is_completed and task.deadline < today %}text-danger text-gradient fw-bolder{% endif %}">
-									<strong>Deadline:</strong>
+									<strong>Deadline: </strong>
 									<i>{{ task.deadline }}</i>
 								</p>
 							</div>

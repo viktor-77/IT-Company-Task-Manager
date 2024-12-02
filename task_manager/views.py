@@ -220,11 +220,12 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
 		context = super().get_context_data(**kwargs)
 		
 		context["today"] = date.today()
-		context["is_coworker"] = (
-			self.object.assignees.filter(pk=self.request.user.pk).exists()
-		)
+		context["is_coworker"] = self.is_user_assigned()
 		
 		return context
+	
+	def is_user_assigned(self) -> bool:
+		return self.object.assignees.filter(pk=self.request.user.pk).exists()
 
 
 class TaskCreateView(LoginRequiredMixin, CreateView):
