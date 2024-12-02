@@ -143,7 +143,7 @@ class WorkerUpdateView(LoginRequiredMixin, UpdateView):
 	
 	def dispatch(self, request, *args, **kwargs):
 		worker = self.get_object()
-		if not (request.user.is_superuser or request.user.pk == worker.pk):
+		if not request.user.is_superuser and request.user.pk != worker.pk:
 			raise PermissionDenied(
 				"You are not allowed to edit this user."
 			)
