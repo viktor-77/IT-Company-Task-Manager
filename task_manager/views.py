@@ -43,11 +43,11 @@ def index(request: HttpRequest) -> HttpResponse:
 
 
 class SearchMixin:
-	def get_context_data(self, **kwargs):
+	def get_context_data(self, **kwargs) -> dict:
 		context = super().get_context_data(**kwargs)
 		context["search_form"] = SearchForm(
 			initial={
-				"query": self.request.GET.get("query", "").strip()
+				"query": str(self.request.GET.get("query", "")).strip()
 			}
 		)
 		
