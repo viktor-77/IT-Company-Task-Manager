@@ -57,8 +57,7 @@ class SearchMixin:
 class PreviousPageMixin:
 	def get_context_data(self, **kwargs) -> dict:
 		context = super().get_context_data(**kwargs)
-		previous_page = self.request.META.get("HTTP_REFERER", "/")
-		context["previous_page"] = previous_page
+		context["previous_page"] = self.request.META.get("HTTP_REFERER", "/")
 		
 		return context
 
