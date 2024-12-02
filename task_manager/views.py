@@ -218,7 +218,6 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
 	
 	def get_context_data(self, **kwargs) -> dict:
 		context = super().get_context_data(**kwargs)
-		
 		context["today"] = date.today()
 		context["is_coworker"] = self.is_user_assigned()
 		
