@@ -4,7 +4,7 @@ from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
-from django.db.models import Count, Q
+from django.db.models import Count, Prefetch, Q
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
@@ -58,6 +58,7 @@ class LoginView(BaseLoginView):
 	def dispatch(self, request, *args, **kwargs):
 		if request.user.is_authenticated:
 			return redirect("task_manager:index")
+		
 		return super().dispatch(request, *args, **kwargs)
 
 
@@ -69,8 +70,8 @@ class WorkerListView(SearchMixin, ListView):
 	
 	def get_queryset(self):
 		queryset = Worker.objects.select_related("position")
-		
 		search_query = self.request.GET.get("query", "").strip()
+		
 		if search_query:
 			queryset = queryset.filter(
 				Q(username__icontains=search_query) |
@@ -85,17 +86,25 @@ class WorkerDetailView(LoginRequiredMixin, DetailView):
 	model = get_user_model()
 	context_object_name = "worker"
 	template_name = "pages/worker_detail.html"
+	
 	queryset = Worker.objects.select_related("position").prefetch_related(
-		"tasks"
+		Prefetch(
+			"tasks",
+			queryset=Task.objects.filter(is_completed=False),
+			to_attr="active_tasks"
+		),
+		Prefetch(
+			"tasks",
+			queryset=Task.objects.filter(is_completed=True),
+			to_attr="resolved_tasks"
+		),
 	)
 	
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
-		
-		context["active_tasks"] = self.object.tasks.filter(is_completed=False)
-		context["resolved_tasks"] = self.object.tasks.filter(is_completed=True)
+		context["active_tasks"] = self.object.active_tasks
+		context["resolved_tasks"] = self.object.resolved_tasks
 		context["today"] = date.today()
-		
 		return context
 
 
