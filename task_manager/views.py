@@ -70,7 +70,7 @@ class WorkerListView(SearchMixin, ListView):
 	
 	def get_queryset(self):
 		queryset = Worker.objects.select_related("position")
-		search_query = self.request.GET.get("query", "").strip()
+		search_query = str(self.request.GET.get("query", "")).strip()
 		
 		if search_query:
 			queryset = queryset.filter(
@@ -199,11 +199,9 @@ class TaskListView(SearchMixin, ListView):
 	paginate_by = 10
 	
 	def get_queryset(self):
-		queryset = Task.objects.select_related("task_type").prefetch_related(
-			"assignees"
-		)
+		queryset = Task.objects.select_related("task_type")
+		search_query = str(self.request.GET.get("query", "")).strip()
 		
-		search_query = self.request.GET.get("query", "").strip()
 		if search_query:
 			queryset = queryset.filter(name__icontains=search_query)
 		
