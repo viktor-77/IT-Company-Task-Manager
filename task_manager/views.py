@@ -1,8 +1,5 @@
 from datetime import date
-from lib2to3.fixes.fix_input import context
 
-from allauth.account.adapter.DefaultAccountAdapter import is_safe_url
-from allauth.socialaccount.providers.mediawiki.provider import settings
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -61,11 +58,6 @@ class PreviousPageMixin:
 	def get_context_data(self, **kwargs) -> dict:
 		context = super().get_context_data(**kwargs)
 		previous_page = self.request.META.get("HTTP_REFERER", "/")
-		
-		if not is_safe_url(
-			url=previous_page, allowed_hosts=settings.ALLOWED_HOSTS
-		):
-			previous_page = "/"
 		context["previous_page"] = previous_page
 		
 		return context
@@ -74,10 +66,7 @@ class PreviousPageMixin:
 class NextPageMixin:
 	def get_success_url(self) -> str:
 		if next_page := self.request.GET.get("next"):
-			if is_safe_url(
-				url=next_page, allowed_hosts=settings.ALLOWED_HOSTS
-			):
-				return next_page
+			return next_page
 		
 		return reverse_lazy(
 			"task_manager:worker_detail", kwargs={"pk": self.get_object().pk}
