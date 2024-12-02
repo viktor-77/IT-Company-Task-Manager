@@ -100,7 +100,7 @@ class WorkerDetailView(LoginRequiredMixin, DetailView):
 		),
 	)
 	
-	def get_context_data(self, **kwargs):
+	def get_context_data(self, **kwargs) -> dict:
 		context = super().get_context_data(**kwargs)
 		
 		context["active_tasks"] = self.object.active_tasks
@@ -185,7 +185,7 @@ class WorkerDeleteView(LoginRequiredMixin, DeleteView):
 		
 		return super().dispatch(request, *args, **kwargs)
 	
-	def get_context_data(self, **kwargs):
+	def get_context_data(self, **kwargs) -> dict:
 		context = super().get_context_data(**kwargs)
 		context["previous_page"] = self.request.META.get("HTTP_REFERER", "/")
 		
@@ -218,7 +218,7 @@ class TaskDetailView(LoginRequiredMixin, DetailView):
 		"assignees"
 	)
 	
-	def get_context_data(self, **kwargs):
+	def get_context_data(self, **kwargs) -> dict:
 		context = super().get_context_data(**kwargs)
 		
 		context["today"] = date.today()
@@ -282,7 +282,7 @@ class TaskDeleteView(LoginRequiredMixin, DeleteView):
 		
 		return super().dispatch(request, *args, **kwargs)
 	
-	def get_context_data(self, **kwargs):
+	def get_context_data(self, **kwargs) -> dict:
 		context = super().get_context_data(**kwargs)
 		context["previous_page"] = self.request.META.get("HTTP_REFERER", "/")
 		
