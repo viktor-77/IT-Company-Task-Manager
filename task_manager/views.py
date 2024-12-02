@@ -71,6 +71,19 @@ class PreviousPageMixin:
 		return context
 
 
+class NextPageMixin:
+	def get_success_url(self):
+		if next_page := self.request.GET.get("next"):
+			if is_safe_url(
+				url=next_page, allowed_hosts=settings.ALLOWED_HOSTS
+			):
+				return next_page
+		
+		return reverse_lazy(
+			"task_manager:worker_detail", kwargs={"pk": self.get_object().pk}
+		)
+
+
 class LoginView(BaseLoginView):
 	def dispatch(self, request, *args, **kwargs):
 		if request.user.is_authenticated:
@@ -153,7 +166,7 @@ class WorkerCreateView(CreateView):
 		return super().form_valid(form)
 
 
-class WorkerUpdateView(LoginRequiredMixin, UpdateView):
+class WorkerUpdateView(LoginRequiredMixin, NextPageMixin, UpdateView):
 	model = get_user_model()
 	form_class = WorkerUpdateForm
 	template_name = "pages/worker_form.html"
@@ -166,14 +179,6 @@ class WorkerUpdateView(LoginRequiredMixin, UpdateView):
 			)
 		
 		return super().dispatch(request, *args, **kwargs)
-	
-	def get_success_url(self):
-		if next_url := self.request.GET.get("next"):
-			return next_url
-		
-		return reverse_lazy(
-			"task_manager:worker_detail", kwargs={"pk": self.get_object().pk}
-		)
 	
 	def form_valid(self, form):
 		worker = form.save(commit=False)
@@ -249,7 +254,7 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
 		)
 
 
-class TaskUpdateView(LoginRequiredMixin, UpdateView):
+class TaskUpdateView(LoginRequiredMixin, NextPageMixin, UpdateView):
 	model = Task
 	form_class = TaskForm
 	template_name = "pages/task_form.html"
@@ -264,14 +269,6 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
 			)
 		
 		return super().dispatch(request, *args, **kwargs)
-	
-	def get_success_url(self):
-		if next_url := self.request.GET.get("next"):
-			return next_url
-		
-		return reverse_lazy(
-			"task_manager:worker_detail", kwargs={"pk": self.request.user.pk}
-		)
 
 
 class TaskDeleteView(LoginRequiredMixin, PreviousPageMixin, DeleteView):
