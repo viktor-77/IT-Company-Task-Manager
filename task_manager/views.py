@@ -1,5 +1,8 @@
 from datetime import date
+from lib2to3.fixes.fix_input import context
 
+from allauth.account.adapter.DefaultAccountAdapter import is_safe_url
+from allauth.socialaccount.providers.mediawiki.provider import settings
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -50,6 +53,20 @@ class SearchMixin:
 				"query": str(self.request.GET.get("query", "")).strip()
 			}
 		)
+		
+		return context
+
+
+class PreviousPageMixin:
+	def get_context_data(self, **kwargs) -> dict:
+		context = super().get_context_data(**kwargs)
+		previous_page = self.request.META.get("HTTP_REFERER", "/")
+		
+		if not is_safe_url(
+			url=previous_page, allowed_hosts=settings.ALLOWED_HOSTS
+		):
+			previous_page = "/"
+		context["previous_page"] = previous_page
 		
 		return context
 
@@ -172,7 +189,7 @@ class WorkerUpdateView(LoginRequiredMixin, UpdateView):
 		return super().form_valid(form)
 
 
-class WorkerDeleteView(LoginRequiredMixin, DeleteView):
+class WorkerDeleteView(LoginRequiredMixin, PreviousPageMixin, DeleteView):
 	model = get_user_model()
 	template_name = "pages/worker_confirm_delete.html"
 	success_url = reverse_lazy("task_manager:worker_list")
@@ -184,12 +201,6 @@ class WorkerDeleteView(LoginRequiredMixin, DeleteView):
 			)
 		
 		return super().dispatch(request, *args, **kwargs)
-	
-	def get_context_data(self, **kwargs) -> dict:
-		context = super().get_context_data(**kwargs)
-		context["previous_page"] = self.request.META.get("HTTP_REFERER", "/")
-		
-		return context
 
 
 class TaskListView(SearchMixin, ListView):
@@ -263,7 +274,7 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
 		)
 
 
-class TaskDeleteView(LoginRequiredMixin, DeleteView):
+class TaskDeleteView(LoginRequiredMixin, PreviousPageMixin, DeleteView):
 	model = Task
 	template_name = "pages/task_confirm_delete.html"
 	success_url = reverse_lazy("task_manager:task_list")
@@ -278,9 +289,3 @@ class TaskDeleteView(LoginRequiredMixin, DeleteView):
 			)
 		
 		return super().dispatch(request, *args, **kwargs)
-	
-	def get_context_data(self, **kwargs) -> dict:
-		context = super().get_context_data(**kwargs)
-		context["previous_page"] = self.request.META.get("HTTP_REFERER", "/")
-		
-		return context
