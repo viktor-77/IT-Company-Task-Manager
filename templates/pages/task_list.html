@@ -67,7 +67,9 @@
 										</a>
 									</td>
 									<td><i>{{ task.created_at }}</i></td>
-									<td><i>{{ task.deadline }}</i></td>
+									<td {% include "includes/deadline_overdue_indicator.html" %}>
+										<i>{{ task.deadline }}</i>
+									</td>
 									<td>
 										{% if task.is_completed %}
 											<span class="text-gradient text-success fw-bold">Resolved
@@ -78,15 +80,7 @@
 											</span>
 										{% endif %}</td>
 									<td>
-										{% if task.priority == 4 %}
-											<span class="badge bg-gradient-danger">Urgent</span>
-										{% elif task.priority == 3 %}
-											<span class="badge bg-gradient-warning">High</span>
-										{% elif task.priority == 2 %}
-											<span class="badge bg-gradient-info">Medium</span>
-										{% else %}
-											<span class="badge bg-gradient-success">Low</span>
-										{% endif %}
+										{% include "includes/priority_badge.html" %}
 									</td>
 									<td>{{ task.task_type }}</td>
 									{% if request.user.position == "Manager" or user.is_superuser %}

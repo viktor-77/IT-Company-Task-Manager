@@ -1,4 +1,5 @@
 from datetime import date
+from lib2to3.fixes.fix_input import context
 
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth import get_user_model, login
@@ -208,6 +209,12 @@ class TaskListView(SearchMixin, ListView):
 			queryset = queryset.filter(name__icontains=search_query)
 		
 		return queryset
+	
+	def get_context_data(self, **kwargs) -> dict:
+		context = super().get_context_data(**kwargs)
+		context["today"] = date.today()
+		
+		return context
 
 
 class TaskDetailView(LoginRequiredMixin, DetailView):

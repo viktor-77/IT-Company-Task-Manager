@@ -16,19 +16,10 @@
 					<strong>Type:</strong>
 					{{ task.task_type }}</p>
 				<p>
-					<strong>Priority:</strong>
-					{% if task.priority == 4 %}
-						<span class="badge bg-gradient-danger">Urgent</span>
-					{% elif task.priority == 3 %}
-						<span class="badge bg-gradient-warning">High</span>
-					{% elif task.priority == 2 %}
-						<span class="badge bg-gradient-info">Medium</span>
-					{% else %}
-						<span class="badge bg-gradient-success">Low</span>
-					{% endif %}
+					{% include "includes/priority_badge.html" %}
 				</p>
-				<p class="{% if not task.is_completed and task.deadline < today %}text-danger text-gradient fw-bolder{% endif %}">
-					<strong>Deadline: </strong>
+				<p {% include "includes/deadline_overdue_indicator.html" %}>
+					<strong>Deadline:</strong>
 					<i>{{ task.deadline }}</i>
 				</p>
 			</div>
