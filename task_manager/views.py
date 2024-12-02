@@ -102,9 +102,11 @@ class WorkerDetailView(LoginRequiredMixin, DetailView):
 	
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
+		
 		context["active_tasks"] = self.object.active_tasks
 		context["resolved_tasks"] = self.object.resolved_tasks
 		context["today"] = date.today()
+		
 		return context
 
 
