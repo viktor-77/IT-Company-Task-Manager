@@ -244,7 +244,10 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
 	template_name = "pages/task_form.html"
 	
 	def dispatch(self, request, *args, **kwargs):
-		if not (request.user.is_superuser or self.is_user_assigned()):
+		task = self.get_object()
+		is_user_assigned = task.assignees.filter(pk=request.user.pk).exists()
+		
+		if not (request.user.is_superuser or is_user_assigned):
 			raise PermissionDenied(
 				"You are not allowed to edit this task."
 			)
@@ -258,10 +261,6 @@ class TaskUpdateView(LoginRequiredMixin, UpdateView):
 		return reverse_lazy(
 			"task_manager:worker_detail", kwargs={"pk": self.request.user.pk}
 		)
-	
-	def is_user_assigned(self) -> bool:
-		task = self.get_object()
-		return task.assignees.filter(pk=self.request.user.pk).exists()
 
 
 class TaskDeleteView(LoginRequiredMixin, DeleteView):
