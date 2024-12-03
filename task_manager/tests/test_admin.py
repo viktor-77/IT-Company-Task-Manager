@@ -4,65 +4,92 @@ from django.test import SimpleTestCase, TestCase
 from django.urls import reverse
 
 from task_manager.admin import TaskAdmin, WorkerAdmin
-from task_manager.models import Position, Task
+from task_manager.models import Task
 
 
-class WorkerAdminTest(TestCase):
+class WorkerAdminDynamicFieldsTest(TestCase):
 	def setUp(self):
-		self.position = Position.objects.create(name="Developer")
 		self.user = get_user_model().objects.create_superuser(
 			username="testuser",
-			email="test@example.com",
-			password="testpassword",
-			position_id=self.position.id,
+			password="testpassword"
 		)
-		
 		self.client.force_login(self.user)
-		self.admin = WorkerAdmin(get_user_model(), site)
 	
-	def test_list_display_includes_position(self):
-		self.assertIn("position", self.admin.list_display)
+	def test_list_display_include_position(self):
+		url = reverse("admin:task_manager_worker_changelist")
+		response = self.client.get(url)
+		
+		self.assertContains(response, "position")
 	
-	def test_fieldsets_includes_position_field(self):
+	def test_fieldsets_include_position(self):
 		url = reverse("admin:task_manager_worker_change", args=[self.user.id])
 		response = self.client.get(url)
 		
 		self.assertContains(response, "position")
 	
-	def test_add_fieldsets_contains_position_field(self):
+	def test_add_fieldsets_are_correct(self):
 		url = reverse("admin:task_manager_worker_add")
 		response = self.client.get(url)
 		
 		self.assertContains(response, "position")
+		self.assertContains(response, "first_name")
+		self.assertContains(response, "last_name")
+
+
+class WorkerAdminStaticFieldsTest(SimpleTestCase):
+	def setUp(self):
+		self.admin_instance = WorkerAdmin(get_user_model(), site)
+	
+	def test_list_editable_include_position(self):
+		self.assertEqual(self.admin_instance.list_editable, ["position"])
+	
+	def test_list_filter_include_position(self):
+		self.assertEqual(self.admin_instance.list_filter, ("position",))
 	
 	def test_search_fields_are_correct(self):
 		self.assertEqual(
-			self.admin.search_fields, ("username", "first_name", "last_name")
+			self.admin_instance.search_fields,
+			("username", "first_name", "last_name")
 		)
-	
-	def test_list_filter_includes_position(self):
-		self.assertEqual(self.admin.list_filter, ("position",))
 
 
 class TaskAdminTest(SimpleTestCase):
 	def setUp(self):
-		self.admin = TaskAdmin(Task, site)
+		self.admin_instance = TaskAdmin(Task, site)
 	
 	def test_list_display_is_correct(self):
 		self.assertEqual(
-			self.admin.list_display,
-			("name", "created_at", "deadline", "is_completed", "priority",
-			"task_type"),
+			self.admin_instance.list_display,
+			(
+				"name",
+				"created_at",
+				"deadline",
+				"is_completed",
+				"priority",
+				"task_type",
+			)
 		)
 	
-	def test_search_fields_are_correct(self):
-		self.assertEqual(self.admin.search_fields, ("name",))
+	def test_list_editable_is_correct(self):
+		self.assertEqual(
+			self.admin_instance.list_editable, ["priority", "task_type"]
+		)
 	
 	def test_list_filter_is_correct(self):
 		self.assertEqual(
-			self.admin.list_filter,
+			self.admin_instance.list_filter,
 			(
-				"deadline", "created_at", "is_completed",
-				"priority", "task_type", "assignees"
-			),
+				"created_at",
+				"deadline",
+				"is_completed",
+				"priority",
+				"task_type",
+				"assignees"
+			)
 		)
+	
+	def test_search_fields_are_correct(self):
+		self.assertEqual(self.admin_instance.search_fields, ("name",))
+	
+	def test_filter_horizontal_is_correct(self):
+		self.assertEqual(self.admin_instance.filter_horizontal, ("assignees",))
