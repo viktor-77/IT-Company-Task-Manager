@@ -22,7 +22,7 @@ class WorkerTestCase(TestCase):
 		self.assertEqual(user.username, "test-user")
 		self.assertIsNone(user.position)
 	
-	def test_position_sets_null_on_delete(self):
+	def test_position_sets_none_on_delete(self):
 		self.position.delete()
 		self.user.refresh_from_db()
 		
