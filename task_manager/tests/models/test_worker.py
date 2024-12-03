@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from task_manager.models import Position
 
 
-class PositionTestCase(TestCase):
+class WorkerTestCase(TestCase):
 	
 	def setUp(self):
 		self.position = Position.objects.create(name="Developer")
@@ -14,7 +14,7 @@ class PositionTestCase(TestCase):
 			position=self.position,
 		)
 	
-	def test_creation_user_without_position(self):
+	def test_creation_worker_without_position(self):
 		user = get_user_model().objects.create_user(
 			username="test-user", password="test-password",
 		)
