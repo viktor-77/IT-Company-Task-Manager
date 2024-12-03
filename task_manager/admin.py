@@ -13,6 +13,9 @@ from task_manager.models import (
 class WorkerAdmin(UserAdmin):
 	list_display = UserAdmin.list_display + ("position",)
 	list_editable = ["position"]
+	list_filter = ("position",)
+	search_fields = ("username", "first_name", "last_name")
+	
 	fieldsets = UserAdmin.fieldsets + (
 		(("Position", {
 			"classes": ("wide", "collapse",),
@@ -33,8 +36,6 @@ class WorkerAdmin(UserAdmin):
 			),
 		)
 	)
-	search_fields = ("username", "first_name", "last_name")
-	list_filter = ("position",)
 
 
 @admin.register(Task)
@@ -48,7 +49,6 @@ class TaskAdmin(admin.ModelAdmin):
 		"task_type",
 	)
 	list_editable = ["priority", "task_type"]
-	search_fields = ("name",)
 	list_filter = (
 		"created_at",
 		"deadline",
@@ -57,6 +57,7 @@ class TaskAdmin(admin.ModelAdmin):
 		"task_type",
 		"assignees"
 	)
+	search_fields = ("name",)
 	filter_horizontal = ("assignees",)
 
 
