@@ -7,27 +7,27 @@ from task_manager.admin import TaskAdmin, WorkerAdmin
 from task_manager.models import Task
 
 
-class WorkerAdminDynamicFieldsTest(TestCase):
+class WorkerAdminPageTest(TestCase):
 	def setUp(self):
 		self.user = get_user_model().objects.create_superuser(
-			username="testuser",
-			password="testpassword"
+			username="test-user",
+			password="test-password"
 		)
 		self.client.force_login(self.user)
 	
-	def test_list_display_include_position(self):
+	def test_changelist_page_displays_position(self):
 		url = reverse("admin:task_manager_worker_changelist")
 		response = self.client.get(url)
 		
 		self.assertContains(response, "position")
 	
-	def test_fieldsets_include_position(self):
+	def test_change_page_displays_position(self):
 		url = reverse("admin:task_manager_worker_change", args=[self.user.id])
 		response = self.client.get(url)
 		
 		self.assertContains(response, "position")
 	
-	def test_add_fieldsets_are_correct(self):
+	def test_add_page_displays_position_and_full_name(self):
 		url = reverse("admin:task_manager_worker_add")
 		response = self.client.get(url)
 		
@@ -36,7 +36,7 @@ class WorkerAdminDynamicFieldsTest(TestCase):
 		self.assertContains(response, "last_name")
 
 
-class WorkerAdminStaticFieldsTest(SimpleTestCase):
+class WorkerAdminConfigTest(SimpleTestCase):
 	def setUp(self):
 		self.admin_instance = WorkerAdmin(get_user_model(), site)
 	
@@ -53,7 +53,7 @@ class WorkerAdminStaticFieldsTest(SimpleTestCase):
 		)
 
 
-class TaskAdminTest(SimpleTestCase):
+class TaskAdminConfigTest(SimpleTestCase):
 	def setUp(self):
 		self.admin_instance = TaskAdmin(Task, site)
 	
