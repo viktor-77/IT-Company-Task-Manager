@@ -34,9 +34,9 @@ class TaskTypeTestCase(TestCase):
 	def test_ascending_ordering(self):
 		TaskType.objects.create(name="Refactoring")
 		TaskType.objects.create(name="Feature")
-		names = [task_type.name for task_type in TaskType.objects.all()]
+		names_list = list(TaskType.objects.values_list("name", flat=True))
 		
-		self.assertEqual(names, sorted(names))
+		self.assertEqual(names_list, sorted(names_list))
 	
 	def test_str_method(self):
 		self.assertEqual(str(self.task_type), self.task_type.name)

@@ -34,9 +34,9 @@ class PositionTestCase(TestCase):
 	def test_ascending_ordering(self):
 		Position.objects.create(name="Manager")
 		Position.objects.create(name="Analyst")
-		names = [position.name for position in Position.objects.all()]
+		names_list = list(Position.objects.values_list("name", flat=True))
 		
-		self.assertEqual(names, sorted(names))
+		self.assertEqual(names_list, sorted(names_list))
 	
 	def test_str_method(self):
 		self.assertEqual(str(self.position), self.position.name)
