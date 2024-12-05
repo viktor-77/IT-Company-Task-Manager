@@ -40,7 +40,7 @@ class TaskModelTest(TestCase):
 		with self.assertRaises(ValidationError):
 			test_task.save()
 	
-	def test_past_deadline_validation_on_create(self):
+	def test_deadline_validation_on_create(self):
 		with self.assertRaises(ValidationError) as context:
 			self._create_task(deadline=self.PAST_DEADLINE)
 		
@@ -48,7 +48,7 @@ class TaskModelTest(TestCase):
 			context, Task.DEADLINE_ERROR_MESSAGE
 		)
 	
-	def test_past_deadline_validation_on_update(self):
+	def test_deadline_validation_on_update(self):
 		self.task.deadline = self.PAST_DEADLINE
 		
 		with self.assertRaises(ValidationError) as context:
