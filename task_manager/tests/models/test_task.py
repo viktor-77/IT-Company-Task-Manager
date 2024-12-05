@@ -1,5 +1,6 @@
 import datetime
 
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
@@ -43,8 +44,8 @@ class TaskModelTest(TestCase):
 		with self.assertRaises(ValidationError) as context:
 			self._create_task(deadline=self.PAST_DEADLINE)
 		
-		self.assertIn(
-			Task.DEADLINE_ERROR_MESSAGE, context.exception.messages,
+		self.assertRaisesMessage(
+			context, Task.DEADLINE_ERROR_MESSAGE
 		)
 	
 	def test_past_deadline_validation_on_update(self):
@@ -53,12 +54,36 @@ class TaskModelTest(TestCase):
 		with self.assertRaises(ValidationError) as context:
 			self.task.save()
 		
-		self.assertIn(
-			Task.DEADLINE_ERROR_MESSAGE, context.exception.messages,
+		self.assertRaisesMessage(
+			context, Task.DEADLINE_ERROR_MESSAGE
 		)
 	
 	def test_is_completed_field_set_false_by_default(self):
 		self.assertFalse(self.task.is_completed)
+	
+	def test_task_not_create_without_task_type(self):
+		with self.assertRaises(ValidationError):
+			Task.objects.create(
+				name="test-name",
+				description="description",
+				deadline=self.ACTUAL_DEADLINE,
+				priority=1,
+			)
+	
+	def test_task_type_sets_null_on_delete(self):
+		self.task_type.delete()
+		self.task.refresh_from_db()
+		
+		self.assertTrue(self.task)
+		self.assertIsNone(self.task.task_type)
+	
+	def test_task_assignees_adding(self):
+		user = get_user_model().objects.create_user(
+			username="test-user", password="test-password",
+		)
+		self.task.assignees.add(user)
+		
+		self.assertIn(user, self.task.assignees.all())
 	
 	def test_str_method(self):
 		self.assertEqual(str(self.task), self.task.name)
