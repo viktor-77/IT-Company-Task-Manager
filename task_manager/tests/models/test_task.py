@@ -1,39 +1,26 @@
 import datetime
 
-from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from task_manager.models import Task, TaskType
-from task_manager.tests.models.utils import get_name_over_length_limit
+from task_manager.models import Task
+from task_manager.tests.models.utils import (
+	create_task_type,
+	get_name_over_length_limit,
+)
 
 
 class TaskModelTest(TestCase):
-	TEST_NAME = "test-name"
-	DESCRIPTION = "description"
-	PRIORITY = 3
-	ACTUAL_DEADLINE = datetime.date.today() + datetime.timedelta(days=7)
-	PAST_DEADLINE = datetime.date.today() - datetime.timedelta(days=7)
+	ACTUAL_DEADLINE = datetime.date.today() + datetime.timedelta(days=1)
+	PAST_DEADLINE = datetime.date.today() - datetime.timedelta(days=1)
 	
 	def setUp(self):
-		self.task_type = TaskType.objects.create(name="Bug")
-		self.task = Task.objects.create(
-			name="task-name",
-			description=self.DESCRIPTION,
-			deadline=self.ACTUAL_DEADLINE,
-			priority=self.PRIORITY,
-			task_type=self.task_type,
-		)
+		self.task_type = create_task_type("Bug")
+		self.task = self._create_task(name="base_task")
 	
 	def test_name_max_length_validation_on_create(self):
 		with self.assertRaises(ValidationError):
-			Task.objects.create(
-				name=get_name_over_length_limit(),
-				description=self.DESCRIPTION,
-				deadline=self.ACTUAL_DEADLINE,
-				priority=self.PRIORITY,
-				task_type=self.task_type,
-			)
+			self._create_task(name=get_name_over_length_limit())
 	
 	def test_name_max_length_validation_on_update(self):
 		self.task.name = get_name_over_length_limit()
@@ -43,22 +30,10 @@ class TaskModelTest(TestCase):
 	
 	def test_unique_name_validation_on_create(self):
 		with self.assertRaises(ValidationError):
-			Task.objects.create(
-				name=self.task.name,
-				description=self.DESCRIPTION,
-				deadline=self.ACTUAL_DEADLINE,
-				priority=self.PRIORITY,
-				task_type=self.task_type,
-			)
+			self._create_task(name=self.task.name)
 	
 	def test_unique_name_validation_on_update(self):
-		test_task = Task.objects.create(
-			name=self.TEST_NAME,
-			description=self.DESCRIPTION,
-			deadline=self.ACTUAL_DEADLINE,
-			priority=self.PRIORITY,
-			task_type=self.task_type,
-		)
+		test_task = self._create_task()
 		test_task.name = self.task.name
 		
 		with self.assertRaises(ValidationError):
@@ -66,13 +41,7 @@ class TaskModelTest(TestCase):
 	
 	def test_past_deadline_validation_on_create(self):
 		with self.assertRaises(ValidationError) as context:
-			Task.objects.create(
-				name=self.TEST_NAME,
-				description=self.DESCRIPTION,
-				deadline=self.PAST_DEADLINE,
-				priority=self.PRIORITY,
-				task_type=self.task_type,
-			)
+			self._create_task(deadline=self.PAST_DEADLINE)
 		
 		self.assertIn(
 			Task.DEADLINE_ERROR_MESSAGE, context.exception.messages,
@@ -93,3 +62,21 @@ class TaskModelTest(TestCase):
 	
 	def test_str_method(self):
 		self.assertEqual(str(self.task), self.task.name)
+	
+	def _create_task(
+		self,
+		name: str = "test-name",
+		description: str = "test-description",
+		deadline: datetime.date = None,
+		priority: int = 3,
+	) -> Task:
+		if deadline is None:
+			deadline = self.ACTUAL_DEADLINE
+		
+		return Task.objects.create(
+			name=name,
+			description=description,
+			deadline=deadline,
+			priority=priority,
+			task_type=self.task_type,
+		)
