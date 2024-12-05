@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 from task_manager.models import TaskType
-from task_manager.tests.models.utils import get_name_over_limit
+from task_manager.tests.models.utils import get_name_over_length_limit
 
 
 class TaskTypeTestCase(TestCase):
@@ -12,10 +12,10 @@ class TaskTypeTestCase(TestCase):
 	
 	def test_name_max_length_validation_on_create(self):
 		with self.assertRaises(ValidationError):
-			TaskType.objects.create(name=get_name_over_limit())
+			TaskType.objects.create(name=get_name_over_length_limit())
 	
 	def test_name_max_length_validation_on_update(self):
-		self.task_type.name = get_name_over_limit()
+		self.task_type.name = get_name_over_length_limit()
 		
 		with self.assertRaises(ValidationError):
 			self.task_type.save()
