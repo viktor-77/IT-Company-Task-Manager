@@ -1,13 +1,13 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
-from task_manager.models import Position
+from task_manager.tests.models.utils import create_position
 
 
 class WorkerTestCase(TestCase):
 	
 	def setUp(self):
-		self.position = Position.objects.create(name="Developer")
+		self.position = create_position("Developer")
 		self.user = get_user_model().objects.create_user(
 			username="andriy",
 			password="test-password",
