@@ -41,7 +41,6 @@ class Worker(AbstractUser):
 	)
 	
 	class Meta:
-		ordering = ['username']
 		verbose_name = 'Worker'
 		verbose_name_plural = 'Workers'
 	
@@ -50,6 +49,7 @@ class Worker(AbstractUser):
 
 
 class Task(models.Model):
+	DEADLINE_ERROR_MESSAGE = "The deadline cannot be in the past."
 	PRIORITY_CHOICES = [
 		(4, "Urgent"),
 		(3, "High"),
@@ -80,7 +80,7 @@ class Task(models.Model):
 		
 		if self.deadline < now().date():
 			raise ValidationError(
-				{"deadline": "The deadline cannot be in the past."}
+				{"deadline": self.DEADLINE_ERROR_MESSAGE}
 			)
 	
 	def save(self, *args, **kwargs):
