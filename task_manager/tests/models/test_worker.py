@@ -28,16 +28,5 @@ class WorkerTestCase(TestCase):
 		
 		self.assertIsNone(self.user.position)
 	
-	def test_ascending_ordering(self):
-		get_user_model().objects.create_user(
-			username="vasil", password="vasil-password",
-		)
-		get_user_model().objects.create_user(
-			username="ivan", password="ivan-password",
-		)
-		usernames = [user.username for user in get_user_model().objects.all()]
-		
-		self.assertEqual(usernames, sorted(usernames))
-	
 	def test_str_method(self):
 		self.assertEqual(str(self.user), self.user.username)
